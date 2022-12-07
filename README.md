@@ -1,5 +1,6 @@
+![alt text](https://github.com/jekeytimoy29/LibrarySystem/blob/master/plan_ui.png?raw=true)
 <p><strong> Case: Admin </strong ></p>
-   <p> </italic> If an admin is logged in, he/she will be provided with the following features: </italic> </p>
+   <p> </strong> If an admin is logged in, he/she will be provided with the following features: </strong> </p>
       <p>  - Add Member </p>
       <p>  - Edit Member </p>
       <p>  - Search member </p>
@@ -9,7 +10,7 @@
       <p>  - Logout (Returns back to login) </p>
 
 <p><strong> Case: Librarian </strong ></p>
-    <p> </italic> If a Librarian is logged in, he / she will be provided with these functionalities: </italic> </p>
+    <p> </strong> If a Librarian is logged in, he / she will be provided with these functionalities: </strong> </p>
       <p>  - Search Member </p>
       <p>  - Checkout Book </p>
       <p>  - Check Book Copy Status </p>
@@ -19,7 +20,7 @@
       <p>  - Logout </p>
 
 <p> <strong> Case: Both </strong ></p>
-  <p> </italic>  If a user that has got both authorizations is logged in, he / she can do all the things a Librarian and an Admin can do. </italic> </p> 
+  <p> </strong>  If a user that has got both authorizations is logged in, he / she can do all the things a Librarian and an Admin can do. </strong> </p> 
       <p>  - Add Member </p>
       <p>  - Edit Member </p>
       <p>  - Search member </p>
