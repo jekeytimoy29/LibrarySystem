@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import business.ControllerInterface;
 import business.SystemController;
+import dataaccess.Auth;
 
 
 public class LibrarySystem extends JFrame implements LibWindow {
@@ -25,7 +26,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
 	JPanel mainPanel;
 	JMenuBar menuBar;
     JMenu options;
-    JMenuItem login, allBookIds, allMemberIds; 
+    JMenuItem login, allBookIds, allMemberIds, checkoutBook; 
     String pathToImage;
     private boolean isInitialized = false;
     
@@ -33,7 +34,8 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	LibrarySystem.INSTANCE,
 		LoginWindow.INSTANCE,
 		AllMemberIdsWindow.INSTANCE,	
-		AllBookIdsWindow.INSTANCE
+		AllBookIdsWindow.INSTANCE,
+		CheckoutBookWindow.INSTANCE
 	};
     	
 	public static void hideAllWindows() {		
@@ -63,7 +65,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
     
     private void setPathToImage() {
     	String currDirectory = System.getProperty("user.dir");
-    	pathToImage = currDirectory+"\\src\\librarysystem\\library.jpg";
+    	pathToImage = currDirectory+"/src/librarysystem/library.jpg";
     }
     
     private void insertSplashImage() {
@@ -80,15 +82,38 @@ public class LibrarySystem extends JFrame implements LibWindow {
     private void addMenuItems() {
        options = new JMenu("Options");  
  	   menuBar.add(options);
- 	   login = new JMenuItem("Login");
+ 	   login = new JMenuItem("Login/Logout");
  	   login.addActionListener(new LoginListener());
+ 	   checkoutBook = new JMenuItem("Checkout Book");
+ 	   checkoutBook.addActionListener(new CheckoutBookListener());
  	   allBookIds = new JMenuItem("All Book Ids");
  	   allBookIds.addActionListener(new AllBookIdsListener());
  	   allMemberIds = new JMenuItem("All Member Ids");
  	   allMemberIds.addActionListener(new AllMemberIdsListener());
  	   options.add(login);
+ 	   
+ 	   if(SystemController.currentAuth == Auth.LIBRARIAN
+ 			   || SystemController.currentAuth == Auth.BOTH) {
+ 		  options.add(checkoutBook);
+ 	   }
+ 	   
  	   options.add(allBookIds);
  	   options.add(allMemberIds);
+    }
+    
+    class CheckoutBookListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LibrarySystem.hideAllWindows();
+			
+			if(!CheckoutBookWindow.INSTANCE.isInitialized()) 
+				CheckoutBookWindow.INSTANCE.init();
+			
+			Util.centerFrameOnDesktop(CheckoutBookWindow.INSTANCE);
+			CheckoutBookWindow.INSTANCE.setVisible(true);
+		}
+    	
     }
     
     class LoginListener implements ActionListener {
@@ -96,7 +121,12 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LibrarySystem.hideAllWindows();
-			LoginWindow.INSTANCE.init();
+			
+			if(!LoginWindow.INSTANCE.isInitialized()) {
+				LoginWindow.INSTANCE.init();
+				LoginWindow.INSTANCE.setController(ci);
+			}
+			
 			Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
 			LoginWindow.INSTANCE.setVisible(true);
 			
