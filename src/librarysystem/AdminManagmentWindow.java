@@ -20,33 +20,26 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import business.LibraryMember;
+import business.LibrarySystemException;
 import business.MemberController;
+import business.SystemController;
 
 public class AdminManagmentWindow extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	MemberController mc = new MemberController();
+	SystemController sc = new SystemController();
 	JFrame bframe;
 	DefaultTableModel model;
-	private JTextField idtf;
-	private JTextField nametf;
-	private JTextField authtf;
-	private JTextField fname;
-	private JTextField lname;
-	private JTextField tel;
-	private JTextField street;
-	private JTextField city;
-	private JTextField state;
-	private JTextField zip;
+	private JTextField txtFname;
+	private JTextField txtLname;
+	private JTextField txtTel;
+	private JTextField txtStreet;
+	private JTextField txtCity;
+	private JTextField txtState;
+	private JTextField txtZip;
 	private JTable table;
 	private JScrollPane scrollPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
 
 	/**
 	 * Launch the application.
@@ -88,45 +81,20 @@ public class AdminManagmentWindow extends JDialog {
 		panel.setLayout(null);
 		bframe.getContentPane().add(panel);
 
-		idtf = new JTextField();
-		idtf.setBounds(79, 6, 161, 26);
-		panel.add(idtf);
-		idtf.setColumns(10);
+		txtFname = new JTextField();
+		txtFname.setBounds(79, 6, 161, 26);
+		panel.add(txtFname);
+		txtFname.setColumns(10);
 
-		fname = new JTextField();
-		fname.setBounds(79, 39, 161, 26);
-		panel.add(fname);
-		fname.setColumns(10);
+		txtLname = new JTextField();
+		txtLname.setBounds(79, 39, 161, 26);
+		panel.add(txtLname);
+		txtLname.setColumns(10);
 
-		lname = new JTextField();
-		lname.setBounds(79, 73, 161, 26);
-		panel.add(lname);
-		lname.setColumns(10);
-
-		tel = new JTextField();
-		tel.setBounds(79, 73, 161, 26);
-		panel.add(tel);
-		tel.setColumns(10);
-
-		street = new JTextField();
-		street.setBounds(79, 73, 161, 26);
-		panel.add(street);
-		street.setColumns(10);
-
-		city = new JTextField();
-		city.setBounds(79, 73, 161, 26);
-		panel.add(city);
-		city.setColumns(10);
-
-		state = new JTextField();
-		state.setBounds(79, 73, 161, 26);
-		panel.add(state);
-		state.setColumns(10);
-
-		zip = new JTextField();
-		zip.setBounds(79, 73, 161, 26);
-		panel.add(zip);
-		zip.setColumns(10);
+		txtTel = new JTextField();
+		txtTel.setBounds(79, 73, 161, 26);
+		panel.add(txtTel);
+		txtTel.setColumns(10);
 
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(6, 207, 582, 234);
@@ -137,28 +105,29 @@ public class AdminManagmentWindow extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
-				fname.setText(model.getValueAt(r, 0).toString());
-				lname.setText(model.getValueAt(r, 1).toString());
-				tel.setText(model.getValueAt(r, 2).toString());
-				street.setText(model.getValueAt(r, 3).toString());
-				city.setText(model.getValueAt(r, 4).toString());
-				state.setText(model.getValueAt(r, 5).toString());
-				zip.setText(model.getValueAt(r, 6).toString());
-
+				txtFname.setText(model.getValueAt(r, 0).toString());
+				txtLname.setText(model.getValueAt(r, 1).toString());
+				txtTel.setText(model.getValueAt(r, 2).toString());
+				txtStreet.setText(model.getValueAt(r, 3).toString());
+				txtCity.setText(model.getValueAt(r, 4).toString());
+				// txtState.setText(model.getValueAt(r, 5).toString());
+				// txtZip.setText(model.getValueAt(r, 6).toString());
+				JOptionPane.showMessageDialog(null,
+						model.getValueAt(r, 0).toString());
 			}
 		});
 		table.setBackground(new Color(255, 240, 245));
 		model = new DefaultTableModel();
-		String[] column = {"First Name", "Last Name", "Telephone", "Street",
-				"City", "State", "Zip"};
-		String[] row = new String[7];
+		String[] row = new String[8];
+		String[] column = {"Member ID", "First Name", "Last Name", "Telephone",
+				"Street", "City", "State", "Zip"};
 		model.setColumnIdentifiers(column);
 		List<LibraryMember> librarymembers = mc.getAllMembers();
 		for (LibraryMember lib : librarymembers) {
 			model.insertRow(0,
-					new Object[]{lib.getFirstName(), lib.getLastName(),
-							lib.getTelephone(), lib.getMemberId(),
-							lib.getAddress()});
+					new Object[]{lib.getMemberId(), lib.getFirstName(),
+							lib.getLastName(), lib.getTelephone(),
+							lib.getMemberId(), lib.getAddress()});
 		}
 		table.setModel(model);
 		scrollPane.setViewportView(table);
@@ -166,37 +135,41 @@ public class AdminManagmentWindow extends JDialog {
 		JButton btnadd = new JButton("Add");
 		btnadd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (fname.getText().equals("") || lname.getText().equals("")
-				 || tel.getText().equals("")
-				 || street.getText().equals("")
-				 || city.getText().equals("")
-				 || state.getText().equals("")
-				 || zip.getText().equals("")
-				 || idtf.getText().equals("")
-				) {
+				if (txtLname.getText().equals("") || txtTel.getText().equals("")
+						|| txtStreet.getText().equals("")
+						|| txtCity.getText().equals("")
+						|| txtState.getText().equals("")
+						|| txtZip.getText().equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill all the fields");
 				} else {
 					// add the entered inputs to the table
-					// row[0] = idtf.getText();
-					row[0] = fname.getText();
-					row[1] = lname.getText();
-					row[2] = tel.getText();
-					row[3] = street.getText();
-					row[4] = city.getText();
-					row[5] = state.getText();
-					row[6] = zip.getText();
+					try {
+						mc.addMember(txtFname.getText(), txtLname.getText(),
+								txtTel.getText(), txtStreet.getText(),
+								txtCity.getText(), txtState.getText(),
+								txtZip.getText(), "2");
+					} catch (LibrarySystemException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					row[0] = txtFname.getText();
+					row[1] = txtLname.getText();
+					row[2] = txtTel.getText();
+					row[3] = txtStreet.getText();
+					row[4] = txtCity.getText();
+					row[5] = txtState.getText();
+					row[6] = txtZip.getText();
 					model.addRow(row);
 					JOptionPane.showMessageDialog(null, "Added Successfully");
-					// clear all the text fields
-					// idtf.setText("");
-					fname.setText("");
-					lname.setText("");
-					tel.setText("");
-					street.setText("");
-					city.setText("");
-					state.setText("");
-					zip.setText("");
+					model.fireTableDataChanged();
+					txtFname.setText("");
+					txtLname.setText("");
+					txtTel.setText("");
+					txtStreet.setText("");
+					txtCity.setText("");
+					txtState.setText("");
+					txtZip.setText("");
 				}
 
 			}
@@ -209,6 +182,7 @@ public class AdminManagmentWindow extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int r = table.getSelectedRow();
 				if (r >= 0) {
+					mc.deleteMember(model.getValueAt(r, 0).toString());
 					model.removeRow(r);
 					JOptionPane.showMessageDialog(null, "Deleted Successfully");
 
@@ -225,9 +199,22 @@ public class AdminManagmentWindow extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int r = table.getSelectedRow();
 				if (r >= 0) {
-					model.setValueAt(idtf.getText(), r, 0);
-					model.setValueAt(nametf.getText(), r, 1);
-					model.setValueAt(authtf.getText(), r, 2);
+					model.setValueAt(txtFname.getText(), r, 0);
+					model.setValueAt(txtLname.getText(), r, 1);
+					model.setValueAt(txtTel.getText(), r, 2);
+					model.setValueAt(txtStreet.getText(), r, 3);
+					model.setValueAt(txtCity.getText(), r, 4);
+					model.setValueAt(txtState.getText(), r, 5);
+					model.setValueAt(txtZip.getText(), r, 6);
+					try {
+						sc.getAndUpdateMember(model.getValueAt(r, 0).toString(),
+								txtFname.getText(), txtLname.getText(),
+								txtTel.getText());
+					} catch (LibrarySystemException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					model.fireTableDataChanged();
 					JOptionPane.showMessageDialog(null, "Updated Successfully");
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select a row");
@@ -240,14 +227,13 @@ public class AdminManagmentWindow extends JDialog {
 		JButton btnclear = new JButton("Clear");
 		btnclear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				idtf.setText("");
-				fname.setText("");
-				lname.setText("");
-				tel.setText("");
-				street.setText("");
-				city.setText("");
-				state.setText("");
-				zip.setText("");
+				txtFname.setText("");
+				txtLname.setText("");
+				txtTel.setText("");
+				txtStreet.setText("");
+				txtCity.setText("");
+				txtState.setText("");
+				txtZip.setText("");
 			}
 		});
 		btnclear.setBounds(471, 101, 117, 29);
@@ -292,40 +278,24 @@ public class AdminManagmentWindow extends JDialog {
 		lblZip.setBounds(252, 11, 47, 16);
 		panel.add(lblZip);
 
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(79, 104, 161, 26);
-		panel.add(textField);
+		txtStreet = new JTextField();
+		txtStreet.setColumns(10);
+		txtStreet.setBounds(79, 101, 161, 26);
+		panel.add(txtStreet);
 
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(79, 139, 161, 26);
-		panel.add(textField_1);
+		txtCity = new JTextField();
+		txtCity.setColumns(10);
+		txtCity.setBounds(79, 134, 161, 26);
+		panel.add(txtCity);
 
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(79, 169, 161, 26);
-		panel.add(textField_2);
+		txtState = new JTextField();
+		txtState.setColumns(10);
+		txtState.setBounds(79, 169, 161, 26);
+		panel.add(txtState);
 
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(298, 6, 161, 26);
-		panel.add(textField_3);
-
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(298, 6, 161, 26);
-		panel.add(textField_4);
-
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(298, 6, 161, 26);
-		panel.add(textField_5);
-
-		textField_6 = new JTextField();
-		textField_6.setColumns(10);
-		textField_6.setBounds(298, 6, 161, 26);
-		panel.add(textField_6);
-
+		txtZip = new JTextField();
+		txtZip.setColumns(10);
+		txtZip.setBounds(286, 6, 161, 26);
+		panel.add(txtZip);
 	}
 }

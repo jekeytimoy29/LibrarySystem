@@ -29,10 +29,10 @@ public class MemberController {
 		DataAccessFacade da = new DataAccessFacade();
 		da.saveNewMember(libraryMember);
 	}
-	// public void deleteMember(String memberId) {
-	// DataAccessFacade da = new DataAccessFacade();
-	// da.deleteMember(memberId);
-	// }
+	public void deleteMember(String memberId) {
+		DataAccessFacade da = new DataAccessFacade();
+		da.deleteMember(memberId);
+	}
 	public void addMember(String memberId, String fname, String lname,
 			String tel, String street, String city, String state, String zip)
 			throws LibrarySystemException {
