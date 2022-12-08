@@ -88,7 +88,16 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 		
 		panel.add(new JLabel());
 		panel.add(new JLabel());
-		panel.add(new JLabel());
+		
+		JButton btnback = new JButton("Back");
+		btnback.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				bframe.setVisible(false);
+				BookManagementWindow.INSTANCE.init();
+			}
+		});
+		panel.add(btnback);
+		
 		JButton btnadd = new JButton("Add Copies");
 		btnadd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

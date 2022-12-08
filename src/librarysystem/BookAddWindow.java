@@ -92,9 +92,7 @@ public class BookAddWindow extends JFrame implements LibWindow {
 		//panel.setPreferredSize(panel.getPreferredSize());
 		panel.setLayout(new GridLayout(0, 4, 20, 0));
 		
-		JScrollPane scrollPane = new JScrollPane(panel);   
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);  
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   
 		
 		//panel.setPreferredSize(new Dimension(100, 100));
   
