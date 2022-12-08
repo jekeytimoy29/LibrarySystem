@@ -167,12 +167,13 @@ public class AdminManagmentWindow extends JDialog {
 		btnadd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (fname.getText().equals("") || lname.getText().equals("")
-						|| tel.getText().equals("")
-						|| street.getText().equals("")
-						|| city.getText().equals("")
-						|| state.getText().equals("")
-						|| zip.getText().equals("")
-						|| idtf.getText().equals("")) {
+				 || tel.getText().equals("")
+				 || street.getText().equals("")
+				 || city.getText().equals("")
+				 || state.getText().equals("")
+				 || zip.getText().equals("")
+				 || idtf.getText().equals("")
+				) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill all the fields");
 				} else {

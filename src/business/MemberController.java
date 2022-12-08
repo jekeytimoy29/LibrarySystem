@@ -13,11 +13,11 @@ public class MemberController {
 	}
 	public List<LibraryMember> getAllMembers() {
 		DataAccess da = new DataAccessFacade();
-		List<LibraryMember> libraryMember = new ArrayList<LibraryMember>();
-		da.readBooksMap().forEach((key, value) -> {
-			libraryMember.addAll(libraryMember);
+		ArrayList<LibraryMember> libraryMembers = new ArrayList<LibraryMember>();
+		da.readMemberMap().forEach((key, value) -> {
+			libraryMembers.add(value);
 		});
-		return libraryMember;
+		return libraryMembers;
 	}
 	public LibraryMember getMember(String memberId) {
 		DataAccessFacade da = new DataAccessFacade();
