@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -17,7 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
 
 import business.ControllerInterface;
-
+import business.LoginException;
 import business.SystemController;
 
 
@@ -25,12 +26,13 @@ public class LoginWindow extends JFrame implements LibWindow {
     public static final LoginWindow INSTANCE = new LoginWindow();
 	
 	private boolean isInitialized = false;
+	private ControllerInterface systemController;
 	
 	private JPanel mainPanel;
 	private JPanel upperHalf;
 	private JPanel middleHalf;
 	private JPanel lowerHalf;
-	private JPanel container;
+	//private JPanel container;
 	
 	private JPanel topPanel;
 	private JPanel middlePanel;
@@ -43,8 +45,6 @@ public class LoginWindow extends JFrame implements LibWindow {
 	private JLabel label;
 	private JButton loginButton;
 	private JButton logoutButton;
-	
-	
 	
 	
 	public boolean isInitialized() {
@@ -133,14 +133,21 @@ public class LoginWindow extends JFrame implements LibWindow {
     		middlePanel.add(leftTextPanel);
     		middlePanel.add(rightTextPanel);
     	}
+    	
     	private void defineLowerPanel() {
     		lowerPanel = new JPanel();
+    		
     		loginButton = new JButton("Login");
     		addLoginButtonListener(loginButton);
     		lowerPanel.add(loginButton);
+    		
+    		logoutButton = new JButton("Logout");
+    		logoutButton.setVisible(false);
+    		addLogoutButtonListener(logoutButton);
+    		lowerPanel.add(logoutButton);
     	}
-
-    	private void defineLeftTextPanel() {
+    	
+		private void defineLeftTextPanel() {
     		
     		JPanel topText = new JPanel();
     		JPanel bottomText = new JPanel();
@@ -158,6 +165,7 @@ public class LoginWindow extends JFrame implements LibWindow {
     		leftTextPanel.add(topText,BorderLayout.NORTH);
     		leftTextPanel.add(bottomText,BorderLayout.CENTER);
     	}
+    	
     	private void defineRightTextPanel() {
     		
     		JPanel topText = new JPanel();
@@ -180,17 +188,52 @@ public class LoginWindow extends JFrame implements LibWindow {
     	private void addBackButtonListener(JButton butn) {
     		butn.addActionListener(evt -> {
     			LibrarySystem.hideAllWindows();
+				LibrarySystem.INSTANCE.init();
     			LibrarySystem.INSTANCE.setVisible(true);
     		});
     	}
     	
-    	private void addLoginButtonListener(JButton butn) {
-    		butn.addActionListener(evt -> {
-    			JOptionPane.showMessageDialog(this,"Successful Login");
-    				
-    		});
-    	}
+		private void addLoginButtonListener(JButton butn) {
+			butn.addActionListener(evt -> {
+				try {
+					systemController.login(username.getText(), password.getText());
+					username.setEditable(false);
+					password.setEnabled(false);
+					loginButton.setVisible(false);
+					logoutButton.setVisible(true);
+
+					JOptionPane.showMessageDialog(this, "Successfully Logged in");
+
+					LibrarySystem.hideAllWindows();
+					LibrarySystem.INSTANCE.init();
+					LibrarySystem.INSTANCE.setVisible(true);
+				} catch (LoginException e) {
+					JOptionPane.showMessageDialog(this, e.getMessage());
+				}
+
+			});
+
+		}
+
+		private void addLogoutButtonListener(JButton butn) {
+			butn.addActionListener(evt -> {
+				SystemController.currentAuth = null;
+				username.setEditable(true);
+				password.setEnabled(true);
+				loginButton.setVisible(true);
+				logoutButton.setVisible(false);
+
+				JOptionPane.showMessageDialog(this, "Successfully Logged out");
+
+			});
+
+		}
+		
+		public void setController(ControllerInterface controller) {
+			systemController = controller;
+		}
+    }
 	
         
     
-}
+
