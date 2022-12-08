@@ -63,13 +63,13 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 	public void init() {
 		// TODO Auto-generated method stub
 		bframe = new JFrame();
-		bframe.getContentPane().setForeground(new Color(255, 255, 255));
+//		bframe.getContentPane().setForeground(new Color(255, 255, 255));
 		bframe.setBounds(100, 100, 600, 500);
 		bframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		bframe.getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(233, 150, 122));
+//		panel.setBackground(new Color(233, 150, 122));
 		panel.setBounds(0, 6, 594, 460);
 		panel.setLayout(null);
 		bframe.getContentPane().add(panel);
@@ -89,7 +89,7 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 //				
 //			}
 //		});
-		table.setBackground(new Color(255, 240, 245));
+//		table.setBackground(new Color(255, 240, 245));
 		
 		// setData
 		model = new DefaultTableModel();
@@ -126,10 +126,9 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 		JButton btnback = new JButton("Back");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bframe.setVisible(false);
-				//MainWindow mWindow = new MainWindow();
-				
-				//mWindow.mframe.setVisible(true);
+				LibrarySystem.hideAllWindows();
+				LibrarySystem.INSTANCE.init();
+    			LibrarySystem.INSTANCE.setVisible(true);
 			}
 		});
 		btnback.setBounds(6, 5, 117, 29);
