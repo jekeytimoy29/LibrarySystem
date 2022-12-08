@@ -50,10 +50,13 @@ public class LoginWindow extends JFrame implements LibWindow {
 	public boolean isInitialized() {
 		return isInitialized;
 	}
+	
 	public void isInitialized(boolean val) {
 		isInitialized = val;
 	}
+	
 	private JTextField messageBar = new JTextField();
+	
 	public void clear() {
 		messageBar.setText("");
 	}
