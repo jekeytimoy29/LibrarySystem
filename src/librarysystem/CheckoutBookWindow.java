@@ -1,183 +1,166 @@
 package librarysystem;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
+import javax.swing.JScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class CheckoutBookWindow extends JFrame implements LibWindow {
-	public static final CheckoutBookWindow INSTANCE = new CheckoutBookWindow();
+public class CheckoutBookWindow extends JFrame implements LibWindow{
+    public static final CheckoutBookWindow INSTANCE = new CheckoutBookWindow();
+	
+	private boolean isInitialized;
 
-	private JPanel contentPane;
-	private boolean isInitialized = false;
-
-	private JPanel mainPanel;
-	private JPanel upperHalf;
-	private JPanel middleHalf;
-	private JPanel lowerHalf;
-
-	private JPanel topPanel;
-	private JPanel lowerPanel;
-	private JPanel middlePanel;
-	private JPanel leftMiddlePanel;
-	private JPanel rightMiddlePanel;
-
-	private JTextField searchBook;
-	private JLabel label;
-	private JButton checkoutBookButton;
-	private JTable booksTable;
-
-	/**
-	 * Create the frame.
-	 */
-	public CheckoutBookWindow() {
-	}
+    private JPanel mainPanel;
+    DefaultTableModel model;
+    private JTextField memberIdField;
+    private JTextField isbnField;
+    private JTable table;
+    private JScrollPane scrollPane;
+	
+	private CheckoutBookWindow() {}
 
 	@Override
 	public void init() {
-		formatContentPane();
-
-		setSize(660, 500);
-		isInitialized = true;
-	}
-
-	private void formatContentPane() {
-		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(1, 1));
-
-		defineUpperHalf();
-		defineMiddleHalf();
-		defineLowerHalf();
-
-		mainPanel.add(upperHalf, BorderLayout.NORTH);
-		mainPanel.add(middleHalf, BorderLayout.CENTER);
-		mainPanel.add(lowerHalf, BorderLayout.SOUTH);
-
-		getContentPane().add(mainPanel);
-		pack();
-
-	}
-
-	private void defineUpperHalf() {
-
-		upperHalf = new JPanel();
-		upperHalf.setLayout(new BorderLayout());
-		defineTopPanel();
-		defineMiddlePanel();
-		defineLowerPanel();
-		upperHalf.add(topPanel, BorderLayout.NORTH);
-		upperHalf.add(middlePanel, BorderLayout.CENTER);
-		upperHalf.add(lowerPanel, BorderLayout.SOUTH);
-
-	}
-
-	private void defineMiddleHalf() {
-		middleHalf = new JPanel();
-		middleHalf.setLayout(new BorderLayout());
-		JSeparator s = new JSeparator();
-		s.setOrientation(SwingConstants.HORIZONTAL);
-		// middleHalf.add(Box.createRigidArea(new Dimension(0,50)));
-		middleHalf.add(s, BorderLayout.SOUTH);
-
-	}
-
-	private void defineLowerHalf() {
-		lowerHalf = new JPanel();
-		lowerHalf.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-		JButton backButton = new JButton("<= Back to Main");
-		addBackButtonListener(backButton);
-		lowerHalf.add(backButton);
-
-	}
-
-	private void defineTopPanel() {
-		topPanel = new JPanel();
-		JPanel intPanel = new JPanel(new BorderLayout());
-		intPanel.add(Box.createRigidArea(new Dimension(0, 20)), BorderLayout.NORTH);
-		JLabel loginLabel = new JLabel("Search Book");
-		Util.adjustLabelFont(loginLabel, Color.BLUE.darker(), true);
-		intPanel.add(loginLabel, BorderLayout.CENTER);
-		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		topPanel.add(intPanel);
-
-	}
-
-	private void defineMiddlePanel() {
-		middlePanel = new JPanel();
-		middlePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		defineLeftMiddlePanel();
-		defineRightMiddlePanel();
-		middlePanel.add(leftMiddlePanel);
-		middlePanel.add(rightMiddlePanel);
-	}
-
-	private void defineLowerPanel() {
-		lowerPanel = new JPanel();
+		setBounds(100, 100, 600, 500);
+		getContentPane().setLayout(null);
 		
-		booksTable = new JTable();
-		lowerPanel.add(booksTable);
-	}
+		mainPanel = new JPanel();
+		mainPanel.setBounds(0, 6, 594, 466);
+		mainPanel.setLayout(null);
+		getContentPane().add(mainPanel);
+		
 
-	private void defineLeftMiddlePanel() {
-
-		JPanel topText = new JPanel();
-		JPanel bottomText = new JPanel();
-		topText.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-		bottomText.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-
-		searchBook = new JTextField(10);
-		label = new JLabel("Search for book to checkout:");
-		label.setFont(Util.makeSmallFont(label.getFont()));
-		topText.add(searchBook);
-		bottomText.add(label);
-
-		leftMiddlePanel = new JPanel();
-		leftMiddlePanel.setLayout(new BorderLayout());
-		leftMiddlePanel.add(topText, BorderLayout.NORTH);
-		leftMiddlePanel.add(bottomText, BorderLayout.CENTER);
-	}
-
-	private void defineRightMiddlePanel() {
-
-		JPanel buttonPAnel = new JPanel();
-		buttonPAnel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-
-		checkoutBookButton = new JButton("Checkout Book");
-		buttonPAnel.add(checkoutBookButton);
-
-		rightMiddlePanel = new JPanel();
-		rightMiddlePanel.setLayout(new BorderLayout());
-		rightMiddlePanel.add(buttonPAnel, BorderLayout.NORTH);
-	}
-
-	private void addBackButtonListener(JButton butn) {
-		butn.addActionListener(evt -> {
-			LibrarySystem.hideAllWindows();
-			LibrarySystem.INSTANCE.setVisible(true);
+		JLabel checkoutBookLabel = new JLabel("Checkout Book");
+		checkoutBookLabel.setBounds(40, 2, 241, 26);
+		Util.adjustLabelFont(checkoutBookLabel, Util.DARK_BLUE, true);
+		mainPanel.add(checkoutBookLabel);
+		
+		JLabel idLabel = new JLabel("Member ID");
+		idLabel.setBounds(36, 40, 91, 16);
+		mainPanel.add(idLabel);
+		
+		JLabel nameLabel = new JLabel("Book ISBN No.");
+		nameLabel.setBounds(36, 68, 101, 27);
+		mainPanel.add(nameLabel);
+		
+		memberIdField = new JTextField();
+		memberIdField.setBounds(129, 35, 241, 26);
+		mainPanel.add(memberIdField);
+		memberIdField.setColumns(10);
+		
+		isbnField = new JTextField();
+		isbnField.setBounds(129, 68, 241, 26);
+		mainPanel.add(isbnField);
+		isbnField.setColumns(10);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(6, 154, 582, 287);
+		mainPanel.add(scrollPane);
+		
+		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int r = table.getSelectedRow();
+				memberIdField.setText(model.getValueAt(r, 0).toString());
+				isbnField.setText(model.getValueAt(r, 1).toString());
+				
+			}
 		});
+		
+		table.setBackground(new Color(255, 240, 245));
+		model = new DefaultTableModel();
+		String[] column = {"memberId","Book Name","Book Copy", "Checkout Date", "Due Date"};
+	    String[] row = new String[2];
+		model.setColumnIdentifiers(column);
+		table.setModel(model);
+		scrollPane.setViewportView(table);
+		
+		JButton btnCheckout = new JButton("Checkout");
+		btnCheckout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(memberIdField.getText().equals("")||isbnField.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Please fill all the fields");
+				}
+				else {
+				// add the entered inputs to the table
+				row[0] = memberIdField.getText();
+				row[1] = isbnField.getText();
+				model.addRow(row);
+				JOptionPane.showMessageDialog(null, "Added Successfully");
+				// clear all the text fields
+			    memberIdField.setText("");
+			    isbnField.setText("");
+				}
+				
+			}
+		});
+		
+		btnCheckout.setBounds(461, 35, 117, 29);
+		mainPanel.add(btnCheckout);
+		
+		JButton btnDiscard = new JButton("Discard");
+		btnDiscard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int r = table.getSelectedRow();
+				if(r>=0) {
+					model.removeRow(r);
+					JOptionPane.showMessageDialog(null, "Deleted Successfully");
+					
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Please select a row");
+				}
+			}
+		});
+		btnDiscard.setBounds(461, 76, 117, 29);
+		mainPanel.add(btnDiscard);
+		
+		JButton btnclear = new JButton("Clear");
+		btnclear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				memberIdField.setText("");
+			    isbnField.setText("");
+			}
+		});
+		btnclear.setBounds(370, 117, 117, 29);
+		mainPanel.add(btnclear);
+		
+		JButton btnback = new JButton("< = Back to Main");
+		btnback.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+    			LibrarySystem.hideAllWindows();
+				LibrarySystem.INSTANCE.init();
+    			LibrarySystem.INSTANCE.setVisible(true);
+			}
+		});
+		btnback.setBounds(79, 117, 147, 29);
+		mainPanel.add(btnback);
+		
 	}
-
+	
+	
 	@Override
 	public boolean isInitialized() {
 		return isInitialized;
 	}
-
+	
 	@Override
 	public void isInitialized(boolean val) {
 		isInitialized = val;
-
 	}
-
 }
