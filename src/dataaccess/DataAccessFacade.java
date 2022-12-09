@@ -10,12 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import business.Book;
+import business.CheckoutRecord;
 import business.LibraryMember;
 
 public class DataAccessFacade implements DataAccess {
 
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS, CHECKOUTRECORDS;
 	}
 	// Windows user can use
 
@@ -51,6 +52,14 @@ public class DataAccessFacade implements DataAccess {
 		saveToStorage(StorageType.BOOKS, books);
 	}
 
+	
+	public void saveNewCheckoutRecord(CheckoutRecord checkoutRecord) {
+		HashMap<String, CheckoutRecord> checkoutRecords = readCheckoutRecordMap();
+		String memberId = checkoutRecord.getMemberId();
+		checkoutRecords.put(memberId, checkoutRecord);
+		saveToStorage(StorageType.CHECKOUTRECORDS, checkoutRecords);	
+	}
+  
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Book> readBooksMap() {
 		// Returns a Map with name/value pairs being
@@ -72,15 +81,24 @@ public class DataAccessFacade implements DataAccess {
 		// userId -> User
 		return (HashMap<String, User>) readFromStorage(StorageType.USERS);
 	}
-
-	///// load methods - these place test data into the storage area
-	///// - used just once at startup
+	
+	@SuppressWarnings("unchecked")
+	public HashMap<String, CheckoutRecord> readCheckoutRecordMap() {
+		//Returns a Map with name/value pairs being
+		//   memberId -> CheckoutRecord
+		return (HashMap<String, CheckoutRecord>)readFromStorage(StorageType.CHECKOUTRECORDS);
+	}
+	
+	
+	/////load methods - these place test data into the storage area
+	///// - used just once at startup 
 
 	static void loadBookMap(List<Book> bookList) {
 		HashMap<String, Book> books = new HashMap<String, Book>();
 		bookList.forEach(book -> books.put(book.getIsbn(), book));
 		saveToStorage(StorageType.BOOKS, books);
 	}
+	
 	static void loadUserMap(List<User> userList) {
 		HashMap<String, User> users = new HashMap<String, User>();
 		userList.forEach(user -> users.put(user.getId(), user));
@@ -93,6 +111,13 @@ public class DataAccessFacade implements DataAccess {
 		saveToStorage(StorageType.MEMBERS, members);
 	}
 
+	 
+	static void loadCheckoutMap(List<CheckoutRecord> checkoutRecords) {
+		HashMap<String, CheckoutRecord> records = new HashMap<String, CheckoutRecord>();
+		checkoutRecords.forEach(checkoutRecord -> records.put(checkoutRecord.getMemberId(), checkoutRecord));
+		saveToStorage(StorageType.CHECKOUTRECORDS, records);
+	}
+	
 	static void saveToStorage(StorageType type, Object ob) {
 		ObjectOutputStream out = null;
 		try {
@@ -132,9 +157,9 @@ public class DataAccessFacade implements DataAccess {
 		}
 		return retVal;
 	}
-
-	final static class Pair<S, T> implements Serializable {
-
+	
+	final static class Pair<S,T> implements Serializable{
+		
 		S first;
 		T second;
 		Pair(S s, T t) {
