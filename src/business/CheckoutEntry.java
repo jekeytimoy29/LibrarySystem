@@ -3,7 +3,7 @@ package business;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class CheckoutEntry implements Serializable{
+final public class CheckoutEntry implements Serializable{
 
 	private static final long serialVersionUID = -6050615539255649506L;
 	private BookCopy bookCopy;

@@ -24,7 +24,7 @@ import business.LibraryMember;
 import business.LibrarySystemException;
 import business.MemberController;
 
-public class MemberManagmentWindow extends JDialog {
+public class MemberManagementWindow extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	MemberController mc = new MemberController();
@@ -47,7 +47,7 @@ public class MemberManagmentWindow extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MemberManagmentWindow window = new MemberManagmentWindow();
+					MemberManagementWindow window = new MemberManagementWindow();
 					window.bframe.setVisible(true);
 					window.bframe.setTitle("Book Window");
 				} catch (Exception e) {
@@ -60,7 +60,7 @@ public class MemberManagmentWindow extends JDialog {
 	/**
 	 * Create the application.
 	 */
-	public MemberManagmentWindow() {
+	public MemberManagementWindow() {
 		initialize();
 	}
 

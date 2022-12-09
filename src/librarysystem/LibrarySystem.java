@@ -26,14 +26,14 @@ public class LibrarySystem extends JFrame implements LibWindow {
 	JPanel mainPanel;
 	JMenuBar menuBar;
     JMenu options;
-    JMenuItem login, /*allBookIds*/bookMgmt, allMemberIds, checkoutBook; 
+    JMenuItem login, allBookIds, bookMgmt, allMemberIds, checkoutBook; 
     String pathToImage;
     private boolean isInitialized = false;
     
     private static LibWindow[] allWindows = { 
     	LibrarySystem.INSTANCE,
 		LoginWindow.INSTANCE,
-//		AllMemberIdsWindow.INSTANCE,
+		AllMemberIdsWindow.INSTANCE,
 		BookManagementWindow.INSTANCE,
 		AllBookIdsWindow.INSTANCE,
 		CheckoutBookWindow.INSTANCE
@@ -87,8 +87,8 @@ public class LibrarySystem extends JFrame implements LibWindow {
  	   login.addActionListener(new LoginListener());
  	   checkoutBook = new JMenuItem("Checkout Book");
  	   checkoutBook.addActionListener(new CheckoutBookListener());
-// 	   allBookIds = new JMenuItem("All Book Ids");
-// 	   allBookIds.addActionListener(new AllBookIdsListener());
+ 	   allBookIds = new JMenuItem("All Book Ids");
+ 	   allBookIds.addActionListener(new AllBookIdsListener());
  	   bookMgmt = new JMenuItem("Book Management");
  	   bookMgmt.addActionListener(new BookManagementListener());
  	   allMemberIds = new JMenuItem("All Member Ids");
@@ -96,11 +96,14 @@ public class LibrarySystem extends JFrame implements LibWindow {
  	   options.add(login);
  	   
  	   if(SystemController.currentAuth == Auth.LIBRARIAN
- 			   || SystemController.currentAuth == Auth.BOTH) {
+ 			   || SystemController.currentAuth == Auth.BOTH)
  		  options.add(checkoutBook);
- 	   }
  	   
- 	   options.add(bookMgmt);
+ 	   if(SystemController.currentAuth == Auth.ADMIN
+ 			   || SystemController.currentAuth == Auth.BOTH)
+ 		   options.add(bookMgmt);
+ 	   
+ 	   options.add(allBookIds);
  	   options.add(allMemberIds);
     }
     
@@ -163,7 +166,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
 			System.out.println(sb.toString());
 			AllBookIdsWindow.INSTANCE.setData(sb.toString());
 			AllBookIdsWindow.INSTANCE.pack();
-			//AllBookIdsWindow.INSTANCE.setSize(660,500);
+			AllBookIdsWindow.INSTANCE.setSize(660,500);
 			Util.centerFrameOnDesktop(AllBookIdsWindow.INSTANCE);
 			AllBookIdsWindow.INSTANCE.setVisible(true);
 			
@@ -193,7 +196,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
 			System.out.println(sb.toString());
 			AllMemberIdsWindow.INSTANCE.setData(sb.toString());
 			AllMemberIdsWindow.INSTANCE.pack();
-			//AllMemberIdsWindow.INSTANCE.setSize(660,500);
+			AllMemberIdsWindow.INSTANCE.setSize(660,500);
 			Util.centerFrameOnDesktop(AllMemberIdsWindow.INSTANCE);
 			AllMemberIdsWindow.INSTANCE.setVisible(true);
 			
