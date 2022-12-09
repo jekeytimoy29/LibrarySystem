@@ -23,13 +23,11 @@ import javax.swing.table.DefaultTableModel;
 import business.LibraryMember;
 import business.LibrarySystemException;
 import business.MemberController;
-import business.SystemController;
 
 public class AdminManagmentWindow extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	MemberController mc = new MemberController();
-	SystemController sc = new SystemController();
 	JFrame bframe;
 	DefaultTableModel model;
 	private JTextField txtFname;
@@ -107,17 +105,21 @@ public class AdminManagmentWindow extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
-				JOptionPane.showMessageDialog(null,
-						model.getValueAt(r, 3).toString().split("\\,")[0]
-								.split("\\("));
 				txtFname.setText(model.getValueAt(r, 0).toString());
 				txtLname.setText(model.getValueAt(r, 1).toString());
 				txtTel.setText(model.getValueAt(r, 2).toString());
-				txtStreet.setText(
-						model.getValueAt(r, 3).toString().split(",")[0]);
-				txtCity.setText(
-						model.getValueAt(r, 3).toString().split(",")[1]);
-				txtZip.setText(model.getValueAt(r, 3).toString().split(",")[2]);
+				if (model.getValueAt(r, 3).toString().split(",").length > 0) {
+					txtStreet.setText(
+							model.getValueAt(r, 3).toString().split(",")[0]);
+					txtCity.setText(
+							model.getValueAt(r, 4).toString().split(",")[1]);
+					txtZip.setText(
+							model.getValueAt(r, 5).toString().split(",")[2]);
+				} else {
+					txtStreet.setText(model.getValueAt(r, 3).toString());
+					txtCity.setText(model.getValueAt(r, 4).toString());
+					txtZip.setText(model.getValueAt(r, 5).toString());
+				}
 			}
 		});
 		table.setBackground(new Color(255, 240, 245));
@@ -199,7 +201,7 @@ public class AdminManagmentWindow extends JDialog {
 					model.setValueAt(txtTel.getText(), r, 2);
 					model.setValueAt(txtStreet.getText(), r, 3);
 					try {
-						sc.getAndUpdateMember(model.getValueAt(r, 0).toString(),
+						mc.getAndUpdateMember(model.getValueAt(r, 0).toString(),
 								txtFname.getText(), txtLname.getText(),
 								txtTel.getText());
 					} catch (LibrarySystemException e1) {

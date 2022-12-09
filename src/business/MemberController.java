@@ -42,4 +42,19 @@ public class MemberController {
 		DataAccess dataAccess = new DataAccessFacade();
 		dataAccess.saveNewMember(libraryMember);
 	}
+
+	public void getAndUpdateMember(String memberId, String fname, String lname,
+			String tel) throws LibrarySystemException {
+		SystemController sc = new SystemController();
+		if (!memberExists(memberId, sc.allMemberIds())) {
+			throw new LibrarySystemException("Member not found.");
+		}
+
+		LibraryMember libraryMember = getMember(memberId);
+		libraryMember.setFirstName(fname);
+		libraryMember.setLastName(lname);
+		libraryMember.setTelephone(tel);
+
+		updateMember(libraryMember);
+	}
 }
