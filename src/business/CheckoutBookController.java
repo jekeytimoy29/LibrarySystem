@@ -45,7 +45,7 @@ public class CheckoutBookController {
 			}
 		}
 
-		throw new CheckoutBookException("Book with ISBN No.: " + bookISBN + "not available for checkout");
+		throw new CheckoutBookException("Book with ISBN No.: " + bookISBN + " not available for checkout");
 	}
 
 	public List<CheckoutRecord> getAllCheckoutRecords() {
