@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -101,33 +102,35 @@ public class AdminManagmentWindow extends JDialog {
 		panel.add(scrollPane);
 
 		table = new JTable();
+		// .split("\\(")
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
+				JOptionPane.showMessageDialog(null,
+						model.getValueAt(r, 3).toString().split("\\,")[0]
+								.split("\\("));
 				txtFname.setText(model.getValueAt(r, 0).toString());
 				txtLname.setText(model.getValueAt(r, 1).toString());
 				txtTel.setText(model.getValueAt(r, 2).toString());
-				txtStreet.setText(model.getValueAt(r, 3).toString());
-				txtCity.setText(model.getValueAt(r, 4).toString());
-				// txtState.setText(model.getValueAt(r, 5).toString());
-				// txtZip.setText(model.getValueAt(r, 6).toString());
-				JOptionPane.showMessageDialog(null,
-						model.getValueAt(r, 0).toString());
+				txtStreet.setText(
+						model.getValueAt(r, 3).toString().split(",")[0]);
+				txtCity.setText(
+						model.getValueAt(r, 3).toString().split(",")[1]);
+				txtZip.setText(model.getValueAt(r, 3).toString().split(",")[2]);
 			}
 		});
 		table.setBackground(new Color(255, 240, 245));
 		model = new DefaultTableModel();
-		String[] row = new String[8];
-		String[] column = {"Member ID", "First Name", "Last Name", "Telephone",
-				"Street", "City", "State", "Zip"};
+		String[] row = new String[4];
+		Random rand = new Random();
+		String id = String.format("%04d", rand.nextInt(10000));
+		String[] column = {"First Name", "Last Name", "Telephone", "City"};
 		model.setColumnIdentifiers(column);
 		List<LibraryMember> librarymembers = mc.getAllMembers();
 		for (LibraryMember lib : librarymembers) {
-			model.insertRow(0,
-					new Object[]{lib.getMemberId(), lib.getFirstName(),
-							lib.getLastName(), lib.getTelephone(),
-							lib.getMemberId(), lib.getAddress()});
+			model.insertRow(0, new Object[]{lib.getFirstName(),
+					lib.getLastName(), lib.getTelephone(), lib.getAddress()});
 		}
 		table.setModel(model);
 		scrollPane.setViewportView(table);
@@ -137,9 +140,7 @@ public class AdminManagmentWindow extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (txtLname.getText().equals("") || txtTel.getText().equals("")
 						|| txtStreet.getText().equals("")
-						|| txtCity.getText().equals("")
-						|| txtState.getText().equals("")
-						|| txtZip.getText().equals("")) {
+						|| txtCity.getText().equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill all the fields");
 				} else {
@@ -148,7 +149,7 @@ public class AdminManagmentWindow extends JDialog {
 						mc.addMember(txtFname.getText(), txtLname.getText(),
 								txtTel.getText(), txtStreet.getText(),
 								txtCity.getText(), txtState.getText(),
-								txtZip.getText(), "2");
+								txtZip.getText(), id);
 					} catch (LibrarySystemException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -157,9 +158,6 @@ public class AdminManagmentWindow extends JDialog {
 					row[1] = txtLname.getText();
 					row[2] = txtTel.getText();
 					row[3] = txtStreet.getText();
-					row[4] = txtCity.getText();
-					row[5] = txtState.getText();
-					row[6] = txtZip.getText();
 					model.addRow(row);
 					JOptionPane.showMessageDialog(null, "Added Successfully");
 					model.fireTableDataChanged();
@@ -167,9 +165,6 @@ public class AdminManagmentWindow extends JDialog {
 					txtLname.setText("");
 					txtTel.setText("");
 					txtStreet.setText("");
-					txtCity.setText("");
-					txtState.setText("");
-					txtZip.setText("");
 				}
 
 			}
@@ -203,9 +198,6 @@ public class AdminManagmentWindow extends JDialog {
 					model.setValueAt(txtLname.getText(), r, 1);
 					model.setValueAt(txtTel.getText(), r, 2);
 					model.setValueAt(txtStreet.getText(), r, 3);
-					model.setValueAt(txtCity.getText(), r, 4);
-					model.setValueAt(txtState.getText(), r, 5);
-					model.setValueAt(txtZip.getText(), r, 6);
 					try {
 						sc.getAndUpdateMember(model.getValueAt(r, 0).toString(),
 								txtFname.getText(), txtLname.getText(),
@@ -231,9 +223,6 @@ public class AdminManagmentWindow extends JDialog {
 				txtLname.setText("");
 				txtTel.setText("");
 				txtStreet.setText("");
-				txtCity.setText("");
-				txtState.setText("");
-				txtZip.setText("");
 			}
 		});
 		btnclear.setBounds(471, 101, 117, 29);
