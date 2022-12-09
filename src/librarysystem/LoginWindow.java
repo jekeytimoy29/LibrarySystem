@@ -235,6 +235,20 @@ public class LoginWindow extends JFrame implements LibWindow {
 		public void setController(ControllerInterface controller) {
 			systemController = controller;
 		}
+		
+		@Override
+		protected void processWindowEvent(final WindowEvent e) {
+
+	        if (e.getID() == WindowEvent.WINDOW_CLOSING
+	        		&& getDefaultCloseOperation() == HIDE_ON_CLOSE) {
+				LibrarySystem.INSTANCE.init();
+    			LibrarySystem.INSTANCE.setVisible(true);
+	        	
+	        }
+	        
+	        super.processWindowEvent(e);
+	    }
+		
     }
 	
         

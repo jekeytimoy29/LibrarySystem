@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
+import business.Book;
+import business.BookController;
 import business.CheckoutBookController;
 import business.CheckoutBookException;
 import business.CheckoutEntry;
@@ -24,16 +26,19 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 
 public class CheckoutBookWindow extends JFrame implements LibWindow{
     public static final CheckoutBookWindow INSTANCE = new CheckoutBookWindow();
     
-    private CheckoutBookController checkoutBook = new CheckoutBookController();
+    private CheckoutBookController checkoutBookControl = new CheckoutBookController();
+    private BookController bookControl = new BookController();
 	
 	private boolean isInitialized;
 
-    private JPanel mainPanel;
+    private JFrame mainFrame;
     DefaultTableModel model;
     private JTextField memberIdField;
     private JTextField isbnField;
@@ -44,13 +49,14 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 
 	@Override
 	public void init() {
-		setBounds(100, 100, 600, 500);
-		getContentPane().setLayout(null);
+		mainFrame = new JFrame();
+		mainFrame.setBounds(100, 100, 600, 500);
+		mainFrame.getContentPane().setLayout(null);
 		
-		mainPanel = new JPanel();
+		JPanel mainPanel = new JPanel();
 		mainPanel.setBounds(0, 6, 594, 466);
 		mainPanel.setLayout(null);
-		getContentPane().add(mainPanel);
+		mainFrame.getContentPane().add(mainPanel);
 		
 
 		JLabel checkoutBookLabel = new JLabel("Checkout Book");
@@ -81,21 +87,27 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		mainPanel.add(scrollPane);
 		
 		table = new JTable();
-		/*table.addMouseListener(new MouseAdapter() {
+		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
 				memberIdField.setText(model.getValueAt(r, 0).toString());
-				isbnField.setText(model.getValueAt(r, 1).toString());
 				
+				for(Book b: bookControl.getAllBooks()) {
+					if(b.getTitle().equals(model.getValueAt(r, 1).toString())) {
+						isbnField.setText(b.getIsbn());
+						break;
+					}
+						
+				}
 			}
-		});*/
+		});
 		
 		model = new DefaultTableModel();
 		String[] column = {"Member Id", "Book Title", "Book Copy No.", "Checkout Date", "Due Date"};
 		model.setColumnIdentifiers(column);
 		
-		for(CheckoutRecord cr: checkoutBook.getAllCheckoutRecords()) {
+		for(CheckoutRecord cr: checkoutBookControl.getAllCheckoutRecords()) {
 			for(CheckoutEntry ce: cr.getEntries())
 				model.insertRow(0, new String[] {
 						cr.getMemberId(), 
@@ -120,7 +132,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 					try {	
 					
 						CheckoutRecord checkoutRecord = 
-								checkoutBook.checkoutBook(memberIdField.getText(), isbnField.getText(), LocalDate.now());
+								checkoutBookControl.checkoutBook(memberIdField.getText(), isbnField.getText(), LocalDate.now());
 						
 						CheckoutEntry lastAddedEntry = checkoutRecord.getEntries()
 								.get(checkoutRecord.getEntries().size() - 1);
@@ -151,19 +163,26 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		mainPanel.add(btnCheckout);
 		
 		JButton btnDiscard = new JButton("Discard");
-		/*btnDiscard.addActionListener(new ActionListener() {
+		btnDiscard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int r = table.getSelectedRow();
 				if(r>=0) {
+					
+					checkoutBookControl.deleteCheckoutEntry(model.getValueAt(r, 0).toString(),
+							model.getValueAt(r, 1).toString(),
+							model.getValueAt(r, 2).toString());
 					model.removeRow(r);
 					JOptionPane.showMessageDialog(null, "Deleted Successfully");
+					// clear all the text fields
+					memberIdField.setText("");
+					isbnField.setText("");
 					
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Please select a row");
 				}
 			}
-		});*/
+		});
 		btnDiscard.setBounds(461, 76, 117, 29);
 		mainPanel.add(btnDiscard);
 		
@@ -180,6 +199,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		JButton btnback = new JButton("< = Back to Main");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mainFrame.setVisible(false);
     			LibrarySystem.hideAllWindows();
 				LibrarySystem.INSTANCE.init();
     			LibrarySystem.INSTANCE.setVisible(true);
@@ -187,6 +207,22 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		});
 		btnback.setBounds(79, 117, 147, 29);
 		mainPanel.add(btnback);
+		
+		mainFrame.setVisible(true);
+		mainFrame.setTitle("Checkout Management");
+
+		Util.centerFrameOnDesktop(mainFrame);
+		
+		mainFrame.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+    			LibrarySystem.hideAllWindows();
+				LibrarySystem.INSTANCE.init();
+    			LibrarySystem.INSTANCE.setVisible(true);
+            }
+
+        });
 		
 	}
 	

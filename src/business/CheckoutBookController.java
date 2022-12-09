@@ -19,7 +19,7 @@ public class CheckoutBookController {
 			throw new CheckoutBookException("Member ID: " + memberId + " not found");
 
 		if (!bookMap.containsKey(bookISBN))
-			throw new CheckoutBookException("Book with ISBN No.: " + bookISBN + "not found");
+			throw new CheckoutBookException("Book with ISBN No.: " + bookISBN + " not found");
 
 		for (BookCopy bc : bookMap.get(bookISBN).getCopies()) {
 			if (bc.isAvailable()) {
@@ -38,8 +38,6 @@ public class CheckoutBookController {
 					da.saveNewCheckoutRecord(checkoutRecord);
 				}
 				
-
-				updateLibraryMember(member);
 				updateBookCopyAvailability(bc, bookISBN);
 				return checkoutRecord;
 			}
@@ -74,9 +72,22 @@ public class CheckoutBookController {
 		da.saveNewBook(bookMap.get(isbn));
 	}
 
-	private void updateLibraryMember(LibraryMember member) {
+	public void deleteCheckoutEntry(String memberId, String bookTitle, String copyNumber) {
 		DataAccess da = new DataAccessFacade();
-		da.saveNewMember(member);
+		CheckoutRecord checkoutRecord = da.readCheckoutRecordMap().get(memberId);
+		BookCopy bookCopy;
+		
+		for(CheckoutEntry entry: checkoutRecord.getEntries()) {
+			if(entry.getBookCopy().getBook().getTitle().equals(bookTitle)
+					&& entry.getBookCopy().getCopyNum() == Integer.parseInt(copyNumber)) {
+				bookCopy = entry.getBookCopy();
+				checkoutRecord.getEntries().remove(entry);
+				da.saveNewCheckoutRecord(checkoutRecord);
+				updateBookCopyAvailability(bookCopy, bookCopy.getBook().getIsbn());
+				break;
+			}
+		}
+		
 	}
 
 }
