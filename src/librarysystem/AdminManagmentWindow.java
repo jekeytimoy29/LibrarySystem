@@ -70,37 +70,36 @@ public class AdminManagmentWindow extends JDialog {
 	private void initialize() {
 		bframe = new JFrame();
 		bframe.getContentPane().setForeground(new Color(255, 255, 255));
-		bframe.setBounds(100, 100, 600, 500);
+		bframe.setBounds(100, 100, 650, 600);
 		bframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		bframe.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(233, 150, 122));
-		panel.setBounds(0, 6, 594, 466);
+		panel.setBounds(0, 6, 650, 600);
 		panel.setLayout(null);
 		bframe.getContentPane().add(panel);
 
 		txtFname = new JTextField();
-		txtFname.setBounds(79, 6, 161, 26);
+		txtFname.setBounds(89, 6, 198, 26);
 		panel.add(txtFname);
 		txtFname.setColumns(10);
 
 		txtLname = new JTextField();
-		txtLname.setBounds(79, 39, 161, 26);
+		txtLname.setBounds(89, 35, 198, 26);
 		panel.add(txtLname);
 		txtLname.setColumns(10);
 
 		txtTel = new JTextField();
-		txtTel.setBounds(79, 73, 161, 26);
+		txtTel.setBounds(89, 73, 198, 26);
 		panel.add(txtTel);
 		txtTel.setColumns(10);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 207, 582, 234);
+		scrollPane.setBounds(6, 247, 638, 311);
 		panel.add(scrollPane);
 
 		table = new JTable();
-		// .split("\\(")
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -108,31 +107,23 @@ public class AdminManagmentWindow extends JDialog {
 				txtFname.setText(model.getValueAt(r, 0).toString());
 				txtLname.setText(model.getValueAt(r, 1).toString());
 				txtTel.setText(model.getValueAt(r, 2).toString());
-				if (model.getValueAt(r, 3).toString().split(",").length > 0) {
-					txtStreet.setText(
-							model.getValueAt(r, 3).toString().split(",")[0]);
-					txtCity.setText(
-							model.getValueAt(r, 4).toString().split(",")[1]);
-					txtZip.setText(
-							model.getValueAt(r, 5).toString().split(",")[2]);
-				} else {
-					txtStreet.setText(model.getValueAt(r, 3).toString());
-					txtCity.setText(model.getValueAt(r, 4).toString());
-					txtZip.setText(model.getValueAt(r, 5).toString());
-				}
+				txtStreet.setText(model.getValueAt(r, 4).toString());
 			}
 		});
 		table.setBackground(new Color(255, 240, 245));
 		model = new DefaultTableModel();
-		String[] row = new String[4];
+		String[] row = new String[6];
 		Random rand = new Random();
 		String id = String.format("%04d", rand.nextInt(10000));
-		String[] column = {"First Name", "Last Name", "Telephone", "City"};
+		String[] column = {"Member ID", "First Name", "Last Name", "Telephone",
+				"Street"};
 		model.setColumnIdentifiers(column);
 		List<LibraryMember> librarymembers = mc.getAllMembers();
 		for (LibraryMember lib : librarymembers) {
-			model.insertRow(0, new Object[]{lib.getFirstName(),
-					lib.getLastName(), lib.getTelephone(), lib.getAddress()});
+			model.insertRow(0,
+					new Object[]{lib.getMemberId(), lib.getFirstName(),
+							lib.getLastName(), lib.getTelephone(),
+							lib.getAddress()});
 		}
 		table.setModel(model);
 		scrollPane.setViewportView(table);
@@ -148,10 +139,10 @@ public class AdminManagmentWindow extends JDialog {
 				} else {
 					// add the entered inputs to the table
 					try {
-						mc.addMember(txtFname.getText(), txtLname.getText(),
+						mc.addMember(id, txtFname.getText(), txtLname.getText(),
 								txtTel.getText(), txtStreet.getText(),
 								txtCity.getText(), txtState.getText(),
-								txtZip.getText(), id);
+								txtZip.getText());
 					} catch (LibrarySystemException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -160,6 +151,8 @@ public class AdminManagmentWindow extends JDialog {
 					row[1] = txtLname.getText();
 					row[2] = txtTel.getText();
 					row[3] = txtStreet.getText();
+					row[4] = txtCity.getText();
+					row[5] = txtZip.getText();
 					model.addRow(row);
 					JOptionPane.showMessageDialog(null, "Added Successfully");
 					model.fireTableDataChanged();
@@ -171,7 +164,7 @@ public class AdminManagmentWindow extends JDialog {
 
 			}
 		});
-		btnadd.setBounds(471, 6, 117, 29);
+		btnadd.setBounds(324, 6, 117, 29);
 		panel.add(btnadd);
 
 		JButton btndel = new JButton("Delete");
@@ -179,6 +172,8 @@ public class AdminManagmentWindow extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int r = table.getSelectedRow();
 				if (r >= 0) {
+					JOptionPane.showMessageDialog(null,
+							model.getValueAt(r, 0).toString());
 					mc.deleteMember(model.getValueAt(r, 0).toString());
 					model.removeRow(r);
 					JOptionPane.showMessageDialog(null, "Deleted Successfully");
@@ -188,7 +183,7 @@ public class AdminManagmentWindow extends JDialog {
 				}
 			}
 		});
-		btndel.setBounds(471, 39, 117, 29);
+		btndel.setBounds(500, 6, 117, 29);
 		panel.add(btndel);
 
 		JButton btnupdate = new JButton("Update");
@@ -215,7 +210,7 @@ public class AdminManagmentWindow extends JDialog {
 				}
 			}
 		});
-		btnupdate.setBounds(471, 70, 117, 29);
+		btnupdate.setBounds(324, 50, 117, 29);
 		panel.add(btnupdate);
 
 		JButton btnclear = new JButton("Clear");
@@ -227,7 +222,7 @@ public class AdminManagmentWindow extends JDialog {
 				txtStreet.setText("");
 			}
 		});
-		btnclear.setBounds(471, 101, 117, 29);
+		btnclear.setBounds(500, 50, 117, 29);
 		panel.add(btnclear);
 
 		JButton btnback = new JButton("Back");
@@ -238,11 +233,11 @@ public class AdminManagmentWindow extends JDialog {
 				// mWindow.mframe.setVisible(true);
 			}
 		});
-		btnback.setBounds(471, 146, 117, 29);
+		btnback.setBounds(500, 105, 117, 29);
 		panel.add(btnback);
 
 		JLabel idLabel = new JLabel("First Name");
-		idLabel.setBounds(6, 11, 61, 16);
+		idLabel.setBounds(6, 11, 85, 16);
 		panel.add(idLabel);
 
 		JLabel nameLabel = new JLabel("Last Name");
@@ -250,11 +245,11 @@ public class AdminManagmentWindow extends JDialog {
 		panel.add(nameLabel);
 
 		JLabel lblTel = new JLabel("Telephone");
-		lblTel.setBounds(6, 78, 61, 16);
+		lblTel.setBounds(6, 78, 71, 16);
 		panel.add(lblTel);
 
 		JLabel lblStreet = new JLabel("Street");
-		lblStreet.setBounds(6, 106, 61, 16);
+		lblStreet.setBounds(6, 110, 61, 16);
 		panel.add(lblStreet);
 
 		JLabel lblCity = new JLabel("City");
@@ -266,27 +261,27 @@ public class AdminManagmentWindow extends JDialog {
 		panel.add(lblState);
 
 		JLabel lblZip = new JLabel("Zip");
-		lblZip.setBounds(252, 11, 47, 16);
+		lblZip.setBounds(6, 202, 47, 16);
 		panel.add(lblZip);
 
 		txtStreet = new JTextField();
 		txtStreet.setColumns(10);
-		txtStreet.setBounds(79, 101, 161, 26);
+		txtStreet.setBounds(89, 105, 198, 26);
 		panel.add(txtStreet);
 
 		txtCity = new JTextField();
 		txtCity.setColumns(10);
-		txtCity.setBounds(79, 134, 161, 26);
+		txtCity.setBounds(89, 139, 198, 26);
 		panel.add(txtCity);
 
 		txtState = new JTextField();
 		txtState.setColumns(10);
-		txtState.setBounds(79, 169, 161, 26);
+		txtState.setBounds(89, 169, 198, 26);
 		panel.add(txtState);
 
 		txtZip = new JTextField();
 		txtZip.setColumns(10);
-		txtZip.setBounds(286, 6, 161, 26);
+		txtZip.setBounds(89, 202, 198, 26);
 		panel.add(txtZip);
 	}
 }
