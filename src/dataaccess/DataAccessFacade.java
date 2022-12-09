@@ -11,6 +11,7 @@ import java.util.List;
 
 import business.Book;
 import business.BookCopy;
+import business.CheckoutEntry;
 import business.LibraryMember;
 import dataaccess.DataAccessFacade.StorageType;
 
@@ -18,7 +19,7 @@ import dataaccess.DataAccessFacade.StorageType;
 public class DataAccessFacade implements DataAccess {
 	
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS, CHECKOUTENTRIES;
 	}
 	// Windows user can use
 	
@@ -46,6 +47,13 @@ public class DataAccessFacade implements DataAccess {
 		saveToStorage(StorageType.BOOKS, books);	
 	}
 	
+	public void saveNewCheckoutEntry(CheckoutEntry checkoutEntry) {
+		HashMap<String, CheckoutEntry> checkoutEntries = readCheckoutEntryMap();
+		String checkoutId = String.valueOf(checkoutEntry.getId());
+		checkoutEntries.put(checkoutId, checkoutEntry);
+		saveToStorage(StorageType.CHECKOUTENTRIES, checkoutEntries);	
+	}
+	
 	@SuppressWarnings("unchecked")
 	public  HashMap<String,Book> readBooksMap() {
 		//Returns a Map with name/value pairs being
@@ -70,6 +78,14 @@ public class DataAccessFacade implements DataAccess {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
+	public HashMap<String, CheckoutEntry> readCheckoutEntryMap() {
+		//Returns a Map with name/value pairs being
+		//   userId -> User
+		return (HashMap<String, CheckoutEntry>)readFromStorage(StorageType.CHECKOUTENTRIES);
+	}
+	
+	
 	/////load methods - these place test data into the storage area
 	///// - used just once at startup  
 	
@@ -79,6 +95,7 @@ public class DataAccessFacade implements DataAccess {
 		bookList.forEach(book -> books.put(book.getIsbn(), book));
 		saveToStorage(StorageType.BOOKS, books);
 	}
+	
 	static void loadUserMap(List<User> userList) {
 		HashMap<String, User> users = new HashMap<String, User>();
 		userList.forEach(user -> users.put(user.getId(), user));
@@ -126,8 +143,6 @@ public class DataAccessFacade implements DataAccess {
 		}
 		return retVal;
 	}
-	
-	
 	
 	final static class Pair<S,T> implements Serializable{
 		

@@ -22,7 +22,7 @@ public class CheckoutRecord implements Serializable{
 	public CheckoutRecord(LibraryMember member, BookCopy bookCopy, LocalDate checkoutDate){
 		this.member = member;
 		this.entries = new ArrayList<>();
-		addCheckoutEntry(new CheckoutEntry(bookCopy, checkoutDate));
+		addCheckoutEntry(new CheckoutEntry(0, bookCopy, checkoutDate));
 		
 	}
 	

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public class CheckoutEntry implements Serializable{
 
 	private static final long serialVersionUID = -6050615539255649506L;
+	private int id;
 	private BookCopy bookCopy;
 	private LocalDate checkoutDate;
 	private LocalDate dueDate;
@@ -22,10 +23,15 @@ public class CheckoutEntry implements Serializable{
 		return dueDate;
 	}
 	
-	CheckoutEntry(BookCopy bookCopy, LocalDate checkoutDate){
+	CheckoutEntry(int checkoutId, BookCopy bookCopy, LocalDate checkoutDate){
+		this.id = checkoutId;
 		this.bookCopy = bookCopy;
 		this.checkoutDate = checkoutDate;
 		this.dueDate = checkoutDate.plusDays(bookCopy.getBook().getMaxCheckoutLength());
+	}
+
+	public int getId() {
+		return id;
 	}
 
 }
