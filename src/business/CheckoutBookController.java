@@ -19,7 +19,7 @@ public class CheckoutBookController {
 			throw new CheckoutBookException("Member ID: " + memberId + " not found");
 
 		if (!bookMap.containsKey(bookISBN))
-			throw new CheckoutBookException("Book with ISBN No.: " + bookISBN + "not found");
+			throw new CheckoutBookException("Book with ISBN No.: " + bookISBN + " not found");
 
 		for (BookCopy bc : bookMap.get(bookISBN).getCopies()) {
 			if (bc.isAvailable()) {

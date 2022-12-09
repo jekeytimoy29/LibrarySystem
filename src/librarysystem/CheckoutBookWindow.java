@@ -24,6 +24,8 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 
 public class CheckoutBookWindow extends JFrame implements LibWindow{
@@ -33,7 +35,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 	
 	private boolean isInitialized;
 
-    private JPanel mainPanel;
+    private JFrame mainFrame;
     DefaultTableModel model;
     private JTextField memberIdField;
     private JTextField isbnField;
@@ -44,13 +46,14 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 
 	@Override
 	public void init() {
-		setBounds(100, 100, 600, 500);
-		getContentPane().setLayout(null);
+		mainFrame = new JFrame();
+		mainFrame.setBounds(100, 100, 600, 500);
+		mainFrame.getContentPane().setLayout(null);
 		
-		mainPanel = new JPanel();
+		JPanel mainPanel = new JPanel();
 		mainPanel.setBounds(0, 6, 594, 466);
 		mainPanel.setLayout(null);
-		getContentPane().add(mainPanel);
+		mainFrame.getContentPane().add(mainPanel);
 		
 
 		JLabel checkoutBookLabel = new JLabel("Checkout Book");
@@ -180,6 +183,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		JButton btnback = new JButton("< = Back to Main");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mainFrame.setVisible(false);
     			LibrarySystem.hideAllWindows();
 				LibrarySystem.INSTANCE.init();
     			LibrarySystem.INSTANCE.setVisible(true);
@@ -187,6 +191,22 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		});
 		btnback.setBounds(79, 117, 147, 29);
 		mainPanel.add(btnback);
+		
+		mainFrame.setVisible(true);
+		mainFrame.setTitle("Checkout Management");
+
+		Util.centerFrameOnDesktop(mainFrame);
+		
+		mainFrame.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+    			LibrarySystem.hideAllWindows();
+				LibrarySystem.INSTANCE.init();
+    			LibrarySystem.INSTANCE.setVisible(true);
+            }
+
+        });
 		
 	}
 	
