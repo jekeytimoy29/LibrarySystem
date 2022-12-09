@@ -44,7 +44,6 @@ public class BookAddWindow extends JFrame implements LibWindow {
     private int numOfAuthor = 0;
     private final int authArea = 240;
     
-    private JFrame bframe;
     private JPanel panel;
     private JTextField idtf;
     private JTextField nametf;
@@ -80,10 +79,10 @@ public class BookAddWindow extends JFrame implements LibWindow {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-		bframe = new JFrame();
+//		bframe = new JFrame();
 		//bframe.getContentPane().setForeground(new Color(255, 255, 255));
 		//bframe.setBounds(100, 100, 600, 570);
-		bframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//bframe.getContentPane().setLayout(null);
 		
 		panel = new JPanel();
@@ -96,7 +95,7 @@ public class BookAddWindow extends JFrame implements LibWindow {
 		
 		//panel.setPreferredSize(new Dimension(100, 100));
   
-        bframe.getContentPane().add(scrollPane);
+        getContentPane().add(scrollPane);
 		
 		
 		//bframe.getContentPane().add(panel);
@@ -142,8 +141,10 @@ public class BookAddWindow extends JFrame implements LibWindow {
 		JButton btnback = new JButton("Back");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bframe.setVisible(false);
+				LibrarySystem.hideAllWindows();
 				BookManagementWindow.INSTANCE.init();
+				BookManagementWindow.INSTANCE.setVisible(true);
+				Util.centerFrameOnDesktop(BookManagementWindow.INSTANCE);
 			}
 		});
 //		btnback.setBounds(471, 15, 117, 29);
@@ -179,8 +180,10 @@ public class BookAddWindow extends JFrame implements LibWindow {
 				bc.addBook(book);
 					
 				JOptionPane.showMessageDialog(null, "Added Successfully");
-				bframe.setVisible(false);
+				LibrarySystem.hideAllWindows();
 				BookManagementWindow.INSTANCE.init();
+				BookManagementWindow.INSTANCE.setVisible(true);
+				Util.centerFrameOnDesktop(BookManagementWindow.INSTANCE);
 				// clear all the text fields
 			    idtf.setText("");
 			    nametf.setText("");
@@ -203,10 +206,9 @@ public class BookAddWindow extends JFrame implements LibWindow {
 //		
 		isInitialized = true;
 		
-		bframe.pack();
+		pack();
 		
-		bframe.setVisible(true);
-		bframe.setTitle("Add New Book");
+		setTitle("Add New Book");
 	}
 	
 	private void addAuthor() {

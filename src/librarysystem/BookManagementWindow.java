@@ -36,7 +36,6 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 	BookController bc = new BookController();
     private boolean isInitialized = false;
     
-    JFrame bframe;
     DefaultTableModel model;
     private JTable table;
     private JScrollPane scrollPane;
@@ -62,17 +61,17 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-		bframe = new JFrame();
+//		bframe = new JFrame();
 //		bframe.getContentPane().setForeground(new Color(255, 255, 255));
-		bframe.setBounds(100, 100, 600, 500);
-		bframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		bframe.getContentPane().setLayout(null);
+		setBounds(100, 100, 600, 500);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
 //		panel.setBackground(new Color(233, 150, 122));
 		panel.setBounds(0, 6, 594, 460);
 		panel.setLayout(null);
-		bframe.getContentPane().add(panel);
+		getContentPane().add(panel);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(6, 46, 582, 408);
@@ -112,12 +111,16 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 		}
 		table.setModel(model);
 		scrollPane.setViewportView(table);
+		table.setEnabled(false);
 		
 		JButton btnadd = new JButton("Add New Book");
 		btnadd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bframe.setVisible(false);
+				LibrarySystem.hideAllWindows();
 				BookAddWindow.INSTANCE.init();
+				BookAddWindow.INSTANCE.setVisible(true);
+				Util.centerFrameOnDesktop(BookAddWindow.INSTANCE);
+				dispose();
 			}
 		});
 		btnadd.setBounds(453, 6, 135, 29);
@@ -129,6 +132,8 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 				LibrarySystem.hideAllWindows();
 				LibrarySystem.INSTANCE.init();
     			LibrarySystem.INSTANCE.setVisible(true);
+    			Util.centerFrameOnDesktop(LibrarySystem.INSTANCE);
+    			dispose();
 			}
 		});
 		btnback.setBounds(6, 5, 117, 29);
@@ -137,15 +142,17 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 		JButton btnAddBookCopy = new JButton("Add Book Copy");
 		btnAddBookCopy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bframe.setVisible(false);
+				LibrarySystem.hideAllWindows();
 				BookAddCopyWindow.INSTANCE.init();
+				BookAddCopyWindow.INSTANCE.setVisible(true);
+				Util.centerFrameOnDesktop(BookAddCopyWindow.INSTANCE);
+				dispose();
 			}
 		});
 		btnAddBookCopy.setBounds(320, 6, 135, 29);
 		panel.add(btnAddBookCopy);
 		
-		bframe.setVisible(true);
-		bframe.setTitle("Book Management");
+		setTitle("Book Management");
 		
 		isInitialized = true;
 	}
