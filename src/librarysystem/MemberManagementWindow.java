@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,10 +23,12 @@ import business.LibraryMember;
 import business.LibrarySystemException;
 import business.MemberController;
 
-public class MemberManagementWindow extends JDialog {
+public class MemberManagementWindow extends JFrame implements LibWindow {
 
 	private static final long serialVersionUID = 1L;
+	public static final MemberManagementWindow INSTANCE = new MemberManagementWindow();
 	MemberController mc = new MemberController();
+	private boolean isInitialized = false;
 	JFrame bframe;
 	DefaultTableModel model;
 	private JTextField txtFname;
@@ -39,6 +40,8 @@ public class MemberManagementWindow extends JDialog {
 	private JTextField txtZip;
 	private JTable table;
 	private JScrollPane scrollPane;
+	public MemberManagementWindow() {
+	}
 
 	/**
 	 * Launch the application.
@@ -47,9 +50,8 @@ public class MemberManagementWindow extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MemberManagementWindow window = new MemberManagementWindow();
-					window.bframe.setVisible(true);
-					window.bframe.setTitle("Book Window");
+					MemberManagementWindow.INSTANCE.init();
+					// window.init();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -58,16 +60,10 @@ public class MemberManagementWindow extends JDialog {
 	}
 
 	/**
-	 * Create the application.
-	 */
-	public MemberManagementWindow() {
-		initialize();
-	}
-
-	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	@Override
+	public void init() {
 		bframe = new JFrame();
 		bframe.getContentPane().setForeground(new Color(255, 255, 255));
 		bframe.setBounds(100, 100, 650, 600);
@@ -228,9 +224,10 @@ public class MemberManagementWindow extends JDialog {
 		JButton btnback = new JButton("Back");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bframe.setVisible(false);
-				// Main mWindow = new Main();
-				// mWindow.mframe.setVisible(true);
+				LibrarySystem.hideAllWindows();
+				LibrarySystem.INSTANCE.init();
+				LibrarySystem.INSTANCE.setVisible(true);
+				bframe.dispose();
 			}
 		});
 		btnback.setBounds(500, 105, 117, 29);
@@ -283,5 +280,23 @@ public class MemberManagementWindow extends JDialog {
 		txtZip.setColumns(10);
 		txtZip.setBounds(89, 202, 198, 26);
 		panel.add(txtZip);
+
+		bframe.setVisible(true);
+		bframe.setTitle("Book Management");
+		isInitialized = true;
+	}
+
+	@Override
+	public boolean isInitialized() {
+		// TODO Auto-generated method stub
+
+		return isInitialized;
+	}
+
+	@Override
+	public void isInitialized(boolean val) {
+		// TODO Auto-generated method stub
+
+		isInitialized = val;
 	}
 }
