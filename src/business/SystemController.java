@@ -40,30 +40,4 @@ public class SystemController implements ControllerInterface {
 		retval.addAll(da.readBooksMap().keySet());
 		return retval;
 	}
-
-	public void getAndUpdateMember(String memberId, String fname, String lname,
-			String tel) throws LibrarySystemException {
-		MemberController memberController = new MemberController();
-		if (!memberController.memberExists(memberId, allMemberIds())) {
-			throw new LibrarySystemException("Member not found.");
-		}
-
-		LibraryMember libraryMember = getMember(memberId);
-		libraryMember.setFirstName(fname);
-		libraryMember.setLastName(lname);
-		libraryMember.setTelephone(tel);
-
-		memberController.updateMember(libraryMember);
-	}
-
-	public LibraryMember getMember(String memberId)
-			throws LibrarySystemException {
-		MemberController memberController = new MemberController();
-		if (!memberController.memberExists(memberId, allMemberIds())) {
-			throw new LibrarySystemException("Member not found.");
-		}
-
-		return memberController.getMember(memberId);
-	}
-
 }
