@@ -5,29 +5,27 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckoutRecord implements Serializable{
+final public class CheckoutRecord implements Serializable{
 
 	private static final long serialVersionUID = 7274497633871237909L;
-	private LibraryMember member;
 	private List<CheckoutEntry> entries;
-	
-	public LibraryMember getMember() {
-		return member;
-	}
+	private String memberId;
 	
 	public List<CheckoutEntry> getEntries() {
 		return entries;
 	}
 	
-	public CheckoutRecord(LibraryMember member, BookCopy bookCopy, LocalDate checkoutDate){
-		this.member = member;
+	CheckoutRecord(String memberId){
+		this.memberId = memberId;
 		this.entries = new ArrayList<>();
-		addCheckoutEntry(new CheckoutEntry(0, bookCopy, checkoutDate));
-		
 	}
 	
 	public void addCheckoutEntry(CheckoutEntry entry) {
 		this.entries.add(entry);
+	}
+
+	public String getMemberId() {
+		return memberId;
 	}
 
 }

@@ -3,6 +3,12 @@ package librarysystem;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+
+import business.CheckoutBookController;
+import business.CheckoutBookException;
+import business.CheckoutEntry;
+import business.CheckoutRecord;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -18,9 +24,12 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 
 public class CheckoutBookWindow extends JFrame implements LibWindow{
     public static final CheckoutBookWindow INSTANCE = new CheckoutBookWindow();
+    
+    private CheckoutBookController checkoutBook = new CheckoutBookController();
 	
 	private boolean isInitialized;
 
@@ -72,7 +81,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		mainPanel.add(scrollPane);
 		
 		table = new JTable();
-		table.addMouseListener(new MouseAdapter() {
+		/*table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
@@ -80,13 +89,23 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 				isbnField.setText(model.getValueAt(r, 1).toString());
 				
 			}
-		});
+		});*/
 		
-		table.setBackground(new Color(255, 240, 245));
 		model = new DefaultTableModel();
-		String[] column = {"memberId","Book Name","Book Copy", "Checkout Date", "Due Date"};
-	    String[] row = new String[2];
+		String[] column = {"Member Id", "Book Title", "Book Copy No.", "Checkout Date", "Due Date"};
 		model.setColumnIdentifiers(column);
+		
+		for(CheckoutRecord cr: checkoutBook.getAllCheckoutRecords()) {
+			for(CheckoutEntry ce: cr.getEntries())
+				model.insertRow(0, new String[] {
+						cr.getMemberId(), 
+						ce.getBookCopy().getBook().getTitle(),
+						String.valueOf(ce.getBookCopy().getCopyNum()),
+						ce.getCheckoutDate().toString(),
+						ce.getDueDate().toString()
+						});
+		}
+		
 		table.setModel(model);
 		scrollPane.setViewportView(table);
 		
@@ -97,14 +116,32 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 					JOptionPane.showMessageDialog(null, "Please fill all the fields");
 				}
 				else {
-				// add the entered inputs to the table
-				row[0] = memberIdField.getText();
-				row[1] = isbnField.getText();
-				model.addRow(row);
-				JOptionPane.showMessageDialog(null, "Added Successfully");
-				// clear all the text fields
-			    memberIdField.setText("");
-			    isbnField.setText("");
+				
+					try {	
+					
+						CheckoutRecord checkoutRecord = 
+								checkoutBook.checkoutBook(memberIdField.getText(), isbnField.getText(), LocalDate.now());
+						
+						CheckoutEntry lastAddedEntry = checkoutRecord.getEntries()
+								.get(checkoutRecord.getEntries().size() - 1);
+						
+						JOptionPane.showMessageDialog(null, "Added Successfully");
+				
+						// clear all the text fields
+						memberIdField.setText("");
+						isbnField.setText("");
+						
+						model.addRow(new String[] {
+								checkoutRecord.getMemberId(),
+								lastAddedEntry.getBookCopy().getBook().getTitle(),
+								String.valueOf(lastAddedEntry.getBookCopy().getCopyNum()),
+								lastAddedEntry.getCheckoutDate().toString(),
+								lastAddedEntry.getDueDate().toString()
+						});
+					}
+					catch(CheckoutBookException ex) {
+						JOptionPane.showMessageDialog(null, ex.getMessage());
+					}
 				}
 				
 			}
@@ -114,7 +151,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 		mainPanel.add(btnCheckout);
 		
 		JButton btnDiscard = new JButton("Discard");
-		btnDiscard.addActionListener(new ActionListener() {
+		/*btnDiscard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int r = table.getSelectedRow();
 				if(r>=0) {
@@ -126,7 +163,7 @@ public class CheckoutBookWindow extends JFrame implements LibWindow{
 					JOptionPane.showMessageDialog(null, "Please select a row");
 				}
 			}
-		});
+		});*/
 		btnDiscard.setBounds(461, 76, 117, 29);
 		mainPanel.add(btnDiscard);
 		
