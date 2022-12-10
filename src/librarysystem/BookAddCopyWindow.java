@@ -31,7 +31,6 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 	BookController bc = new BookController();
     private boolean isInitialized = false;
 	
-    private JFrame bframe;
     private JPanel panel;
     private JComboBox<String> isbnList;
     private JTextField copytf;
@@ -59,14 +58,14 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-		bframe = new JFrame();
-		bframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		bframe = new JFrame();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//bframe.getContentPane().setLayout(null);
 		
 		panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2, 20, 0));
 		
-        bframe.getContentPane().add(panel);
+        getContentPane().add(panel);
         
         List<String> isbns = bc.allBookIds();
 		Collections.sort(isbns);
@@ -92,8 +91,10 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 		JButton btnback = new JButton("Back");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bframe.setVisible(false);
+				LibrarySystem.hideAllWindows();
 				BookManagementWindow.INSTANCE.init();
+				BookManagementWindow.INSTANCE.setVisible(true);
+				Util.centerFrameOnDesktop(BookManagementWindow.INSTANCE);
 			}
 		});
 		panel.add(btnback);
@@ -113,8 +114,10 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 					bc.addBook(book);
 						
 					JOptionPane.showMessageDialog(null, "Added Successfully");
-					bframe.setVisible(false);
+					LibrarySystem.hideAllWindows();
 					BookManagementWindow.INSTANCE.init();
+					BookManagementWindow.INSTANCE.setVisible(true);
+					Util.centerFrameOnDesktop(BookManagementWindow.INSTANCE);
 					// clear all the text fields
 				    copytf.setText("");
 				}
@@ -125,10 +128,9 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
         
         isInitialized = true;
 		
-		bframe.pack();
+		pack();
 		
-		bframe.setVisible(true);
-		bframe.setTitle("Add Book Copy");
+		setTitle("Add Book Copy");
 	}
 
 	@Override
