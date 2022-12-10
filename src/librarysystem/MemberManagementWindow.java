@@ -34,7 +34,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 	private JTextField txtFname;
 	private JTextField txtLname;
 	private JTextField txtTel;
-	private JTextField txtAddress;
+	private JTextField txtStreet;
 	private JTextField txtCity;
 	private JTextField txtState;
 	private JTextField txtZip;
@@ -71,7 +71,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		bframe.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(233, 150, 122));
+		//panel.setBackground(new Color(233, 150, 122));
 		panel.setBounds(0, 6, 650, 600);
 		panel.setLayout(null);
 		bframe.getContentPane().add(panel);
@@ -103,8 +103,8 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 				txtFname.setText(model.getValueAt(r, 1).toString());
 				txtLname.setText(model.getValueAt(r, 2).toString());
 				txtTel.setText(model.getValueAt(r, 3).toString());
-				if (txtAddress.getText() != null) {
-					txtAddress.setText(
+				if (txtStreet.getText() != null) {
+					txtStreet.setText(
 							model.getValueAt(r, 4).toString().split(",")[0]
 									.replace("(", " "));
 					txtCity.setText(
@@ -113,10 +113,13 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 					txtZip.setText(
 							model.getValueAt(r, 4).toString().split(",")[2]
 									.replace(")", " "));
+					txtState.setText(
+							model.getValueAt(r, 4).toString().split(",")[3]
+									.replace(")", " "));
 				}
 			}
 		});
-		table.setBackground(new Color(255, 240, 245));
+		//table.setBackground(new Color(255, 240, 245));
 		model = new DefaultTableModel();
 		String[] row = new String[8];
 		Random rand = new Random();
@@ -141,8 +144,9 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 				if (txtFname.getText().equals("")
 						|| txtLname.getText().equals("")
 						|| txtTel.getText().equals("")
-						|| txtAddress.getText().equals("")
+						|| txtStreet.getText().equals("")
 						|| txtCity.getText().equals("")
+						|| txtState.getText().equals("")
 						|| txtZip.getText().equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill all the fields");
@@ -150,30 +154,32 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 					// add the entered inputs to the table
 					try {
 						mc.addMember(id, txtFname.getText(), txtLname.getText(),
-								txtTel.getText(), txtAddress.getText(),
+								txtTel.getText(), txtStreet.getText(),
 								txtCity.getText(), txtState.getText(),
 								txtZip.getText());
 					} catch (LibrarySystemException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					row[0] = id;
+					/*row[0] = id;
 					row[1] = txtFname.getText();
 					row[2] = txtLname.getText();
 					row[3] = txtTel.getText();
-					row[4] = txtAddress.getText();
+					row[4] = txtStreet.getText();
 					row[5] = txtState.getText();
 					row[6] = txtCity.getText();
 					row[7] = txtZip.getText();
-					model.addRow(row);
+					model.addRow(row);*/
 					JOptionPane.showMessageDialog(null, "Added Successfully");
-					model.fireTableDataChanged();
+					//model.fireTableDataChanged();
 					txtFname.setText("");
 					txtLname.setText("");
 					txtTel.setText("");
-					txtAddress.setText("");
+					txtStreet.setText("");
 					txtCity.setText("");
 					txtZip.setText("");
+					txtState.setText("");
+					MemberManagementWindow.INSTANCE.init();
 				}
 
 			}
@@ -191,6 +197,13 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 					mc.deleteMember(model.getValueAt(r, 0).toString());
 					model.removeRow(r);
 					JOptionPane.showMessageDialog(null, "Deleted Successfully");
+					txtFname.setText("");
+					txtLname.setText("");
+					txtTel.setText("");
+					txtStreet.setText("");
+					txtCity.setText("");
+					txtZip.setText("");
+					txtState.setText("");
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select a row");
@@ -232,7 +245,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 				txtFname.setText("");
 				txtLname.setText("");
 				txtTel.setText("");
-				txtAddress.setText("");
+				txtStreet.setText("");
 				txtCity.setText("");
 				txtState.setText("");
 				txtZip.setText("");
@@ -276,7 +289,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		lblTel.setBounds(6, 78, 71, 16);
 		panel.add(lblTel);
 
-		JLabel lblStreet = new JLabel("Address");
+		JLabel lblStreet = new JLabel("Street");
 		lblStreet.setBounds(6, 110, 61, 16);
 		panel.add(lblStreet);
 
@@ -284,32 +297,32 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		lblCity.setBounds(6, 144, 61, 16);
 		panel.add(lblCity);
 
-		// JLabel lblState = new JLabel("State");
-		// lblState.setBounds(6, 174, 61, 16);
-		// panel.add(lblState);
+		JLabel lblState = new JLabel("State");
+		lblState.setBounds(6, 174, 61, 16);
+		panel.add(lblState);
 
 		JLabel lblZip = new JLabel("Zip");
-		lblZip.setBounds(6, 170, 47, 16);
+		lblZip.setBounds(6, 204, 47, 16);
 		panel.add(lblZip);
 
-		txtAddress = new JTextField();
-		txtAddress.setColumns(10);
-		txtAddress.setBounds(89, 105, 198, 26);
-		panel.add(txtAddress);
+		txtStreet = new JTextField();
+		txtStreet.setColumns(10);
+		txtStreet.setBounds(89, 105, 198, 26);
+		panel.add(txtStreet);
 
 		txtCity = new JTextField();
 		txtCity.setColumns(10);
 		txtCity.setBounds(89, 139, 198, 26);
 		panel.add(txtCity);
 
-		// txtState = new JTextField();
-		// txtState.setColumns(10);
-		// txtState.setBounds(89, 169, 198, 26);
-		// panel.add(txtState);
+		txtState = new JTextField();
+		txtState.setColumns(10);
+		txtState.setBounds(89, 169, 198, 26);
+		panel.add(txtState);
 
 		txtZip = new JTextField();
 		txtZip.setColumns(10);
-		txtZip.setBounds(89, 170, 198, 26);
+		txtZip.setBounds(89, 199, 198, 26);
 		panel.add(txtZip);
 
 		bframe.setVisible(true);
