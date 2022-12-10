@@ -177,7 +177,7 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 	 			String memberName = memberNameByCheckout.get(memberKey)!=null?memberNameByCheckout.get(memberKey).split("=")[0]:"";
 	 			String memberDueDate = memberNameByCheckout.get(memberKey)!=null?memberNameByCheckout.get(memberKey).split("=")[1]:"";
 	 			if (!memberDueDate.equals("") && LocalDate.parse(memberDueDate).isBefore(LocalDate.now())) {
-	 				memberDueDate = "!!! "+memberDueDate;
+	 				memberDueDate += " (Overdue)";
 	 			}
 	 			model.insertRow(0, new Object[] { bc.getBook().getIsbn(), bc.getBook().getTitle(), bc.getCopyNum(), memberName, memberDueDate });
 	 			

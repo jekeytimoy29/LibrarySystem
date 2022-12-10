@@ -119,8 +119,8 @@ public class LibrarySystem extends JFrame implements LibWindow {
 	 		options.add(checkoutByBook);
 		}
 		
-//		options.add(allBookIds);
-//	 	options.add(allMemberIds);
+		options.add(allBookIds);
+	 	options.add(allMemberIds);
 	}
 
 	class CheckoutByMemberListener implements ActionListener {
