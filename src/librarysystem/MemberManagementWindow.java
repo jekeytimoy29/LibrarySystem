@@ -67,7 +67,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		bframe = new JFrame();
 		bframe.getContentPane().setForeground(new Color(255, 255, 255));
 		bframe.setBounds(100, 100, 650, 600);
-		bframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		//bframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		bframe.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
@@ -257,10 +257,10 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		JButton btnback = new JButton("Back");
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				bframe.setVisible(false);
 				LibrarySystem.hideAllWindows();
 				LibrarySystem.INSTANCE.init();
 				LibrarySystem.INSTANCE.setVisible(true);
-				bframe.dispose();
 			}
 		});
 
@@ -270,7 +270,6 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 				LibrarySystem.hideAllWindows();
 				LibrarySystem.INSTANCE.init();
 				LibrarySystem.INSTANCE.setVisible(true);
-				e.getWindow().dispose();
 			}
 		});
 

@@ -108,19 +108,20 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		options.add(login);
 
 		if (SystemController.currentAuth == Auth.LIBRARIAN
-				|| SystemController.currentAuth == Auth.BOTH)
+				|| SystemController.currentAuth == Auth.BOTH) {
 			options.add(checkoutBook);
+	 		options.add(checkoutByMember);
+	 		options.add(checkoutByBook);
+		}
 
 		if (SystemController.currentAuth == Auth.ADMIN
 				|| SystemController.currentAuth == Auth.BOTH) {
 			options.add(bookMgmt);
 			options.add(memberMgmt);
-	 		options.add(checkoutByMember);
-	 		options.add(checkoutByBook);
+			
+			options.add(allBookIds);
+		 	options.add(allMemberIds);
 		}
-		
-		options.add(allBookIds);
-	 	options.add(allMemberIds);
 	}
 
 	class CheckoutByMemberListener implements ActionListener {
