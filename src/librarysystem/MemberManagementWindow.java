@@ -71,7 +71,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		bframe.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		//panel.setBackground(new Color(233, 150, 122));
+		// panel.setBackground(new Color(233, 150, 122));
 		panel.setBounds(0, 6, 650, 600);
 		panel.setLayout(null);
 		bframe.getContentPane().add(panel);
@@ -119,9 +119,9 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 				}
 			}
 		});
-		//table.setBackground(new Color(255, 240, 245));
+		// table.setBackground(new Color(255, 240, 245));
 		model = new DefaultTableModel();
-		String[] row = new String[8];
+		String[] row = new String[9];
 		Random rand = new Random();
 		String id = String.format("%04d", rand.nextInt(10000));
 		String[] column = {"Member ID", "First Name", "Last Name", "Telephone",
@@ -161,7 +161,8 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					/*row[0] = id;
+
+					row[0] = id;
 					row[1] = txtFname.getText();
 					row[2] = txtLname.getText();
 					row[3] = txtTel.getText();
@@ -169,9 +170,10 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 					row[5] = txtState.getText();
 					row[6] = txtCity.getText();
 					row[7] = txtZip.getText();
-					model.addRow(row);*/
+					model.addRow(row);
+
 					JOptionPane.showMessageDialog(null, "Added Successfully");
-					//model.fireTableDataChanged();
+					// model.fireTableDataChanged();
 					txtFname.setText("");
 					txtLname.setText("");
 					txtTel.setText("");
@@ -179,7 +181,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 					txtCity.setText("");
 					txtZip.setText("");
 					txtState.setText("");
-					MemberManagementWindow.INSTANCE.init();
+					// MemberManagementWindow.INSTANCE.init();
 				}
 
 			}
