@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import business.BookController;
 import business.BookCopy;
 import business.CheckoutByController;
 import business.CheckoutEntry;
+import business.CheckoutRecord;
 import business.LibraryMember;
 
 public class CheckoutByBookWindow extends JFrame implements LibWindow {
@@ -76,14 +79,12 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 //		}
 		HashMap<String, LibraryMember> members = cc.getMembers();
 		members.forEach((key, value) -> {
-			System.out.println(key);
-			for(CheckoutEntry ce: value.getCheckoutRecord().getEntries()) {
-				System.out.println(ce.getCheckoutDate());
+			CheckoutRecord cr = cc.getCheckout(key);
+			for(CheckoutEntry ce: cr.getEntries()) {
 				if(ce.getBookCopy()!=null) {
 					String memberKey = ce.getBookCopy().getBook().getIsbn()+"="+ce.getBookCopy().getCopyNum();
 					String memberVal = (value.getFirstName()+" "+value.getLastName())+"="+(ce.getDueDate().toString());
 					memberNameByCheckout.put(memberKey, memberVal);
-					System.out.println(memberKey+" === "+memberVal);
 				}
 			}
 		});
@@ -175,26 +176,30 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 	 			String memberKey = bc.getBook().getIsbn()+"="+bc.getCopyNum();
 	 			String memberName = memberNameByCheckout.get(memberKey)!=null?memberNameByCheckout.get(memberKey).split("=")[0]:"";
 	 			String memberDueDate = memberNameByCheckout.get(memberKey)!=null?memberNameByCheckout.get(memberKey).split("=")[1]:"";
+	 			if (!memberDueDate.equals("") && LocalDate.parse(memberDueDate).isBefore(LocalDate.now())) {
+	 				memberDueDate = "!!! "+memberDueDate;
+	 			}
 	 			model.insertRow(0, new Object[] { bc.getBook().getIsbn(), bc.getBook().getTitle(), bc.getCopyNum(), memberName, memberDueDate });
+	 			
 	 		}
  		}
  		
- 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
- 		    private static final long serialVersionUID = 1L;
-
-			@Override
- 		    public Component getTableCellRendererComponent(JTable table,
- 		            Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-
- 		        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-
- 		        String dueDate = table.getModel().getValueAt(row, 4).toString();
- 		        if (!dueDate.equals("") && LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
- 		            setBackground(Color.PINK/*new Color(255, 240, 245)*/);
- 		        }       
- 		        return this;
- 		    }   
- 		});
+// 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+// 		    private static final long serialVersionUID = 1L;
+//
+//			@Override
+// 		    public Component getTableCellRendererComponent(JTable table,
+// 		            Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+//
+// 		        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+//
+// 		        String dueDate = table.getModel().getValueAt(row, 4).toString();
+// 		        if (!dueDate.equals("") && LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
+// 		            setBackground(Color.PINK/*new Color(255, 240, 245)*/);
+// 		        }       
+// 		        return this;
+// 		    }   
+// 		});
 	}
 
 	@Override
