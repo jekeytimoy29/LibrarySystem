@@ -80,11 +80,15 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 		HashMap<String, LibraryMember> members = cc.getMembers();
 		members.forEach((key, value) -> {
 			CheckoutRecord cr = cc.getCheckout(key);
-			for(CheckoutEntry ce: cr.getEntries()) {
-				if(ce.getBookCopy()!=null) {
-					String memberKey = ce.getBookCopy().getBook().getIsbn()+"="+ce.getBookCopy().getCopyNum();
-					String memberVal = (value.getFirstName()+" "+value.getLastName())+"="+(ce.getDueDate().toString());
-					memberNameByCheckout.put(memberKey, memberVal);
+			
+			if (null != cr) {
+				for (CheckoutEntry ce : cr.getEntries()) {
+					if (ce.getBookCopy() != null) {
+						String memberKey = ce.getBookCopy().getBook().getIsbn() + "=" + ce.getBookCopy().getCopyNum();
+						String memberVal = (value.getFirstName() + " " + value.getLastName()) + "="
+								+ (ce.getDueDate().toString());
+						memberNameByCheckout.put(memberKey, memberVal);
+					}
 				}
 			}
 		});
