@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -54,35 +56,62 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 	 * Create the frame.
 	 */
 	private BookAddCopyWindow() {}
+	
+	private boolean validateForm() {
+		if(copytf.getText().trim().equals("")) {
+			JOptionPane.showMessageDialog(null, "Please fill all the fields");
+			return false;
+		}
+		try {
+			Integer.parseInt(copytf.getText().trim());
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Please fill copies field with numeric value");
+			return false;
+		}
+				
+		return true;
+	}
 
 	@Override
 	public void init() {
+		if(!isInitialized) initUi();
+		initData();
+	}
+	
+	public void initData() {
+		List<String> isbns = bc.allBookIds();
+		Collections.sort(isbns);
+		DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) isbnList.getModel();
+        model.removeAllElements();
+        for (String item : isbns) {
+            model.addElement(item);
+        }
+        isbnList.setModel(model);
+        
+        copytf.setText("1");
+	}
+	
+	public void initUi() {
 		// TODO Auto-generated method stub
-//		bframe = new JFrame();
+		setTitle("Add Book Copy");
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//bframe.getContentPane().setLayout(null);
 		
 		panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2, 20, 0));
 		
         getContentPane().add(panel);
-        
-        List<String> isbns = bc.allBookIds();
-		Collections.sort(isbns);
 		
 		JLabel lblIsbn = new JLabel("ISBN");
 		panel.add(lblIsbn);
      
-        isbnList = new JComboBox<String>(new Vector<String>(isbns));
+        isbnList = new JComboBox<String>();
         panel.add(isbnList);
         
         JLabel copyLabel = new JLabel("Number of Copies");
-		//maxLabel.setBounds(6, 86, 117, 26);
 		panel.add(copyLabel);
 		copytf = new JTextField();
-		//maxtf.setBounds(119, 86, 70, 26);
 		copytf.setColumns(10);
-		copytf.setText("1");
 		panel.add(copytf);
 		
 		panel.add(new JLabel());
@@ -92,9 +121,8 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				LibrarySystem.hideAllWindows();
-				BookManagementWindow.INSTANCE.init();
-				BookManagementWindow.INSTANCE.setVisible(true);
 				Util.centerFrameOnDesktop(BookManagementWindow.INSTANCE);
+				BookManagementWindow.INSTANCE.setVisible(true);
 			}
 		});
 		panel.add(btnback);
@@ -102,11 +130,7 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 		JButton btnadd = new JButton("Add Copies");
 		btnadd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(copytf.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Please fill all the fields");
-				}
-				else {
-					// add the entered inputs to the table
+				if(validateForm()) {
 					Book book = bc.getBook(isbnList.getSelectedItem().toString());
 					for(int i=0;i<Integer.parseInt(copytf.getText());i++) {
 						book.addCopy();
@@ -114,23 +138,20 @@ public class BookAddCopyWindow extends JFrame implements LibWindow {
 					bc.addBook(book);
 						
 					JOptionPane.showMessageDialog(null, "Added Successfully");
+					copytf.setText("");
+					isbnList.setSelectedIndex(0);
 					LibrarySystem.hideAllWindows();
-					BookManagementWindow.INSTANCE.init();
-					BookManagementWindow.INSTANCE.setVisible(true);
+					BookManagementWindow.INSTANCE.populateData();
 					Util.centerFrameOnDesktop(BookManagementWindow.INSTANCE);
-					// clear all the text fields
-				    copytf.setText("");
+					BookManagementWindow.INSTANCE.setVisible(true);
 				}
-				
 			}
 		});
 		panel.add(btnadd);
-        
-        isInitialized = true;
 		
 		pack();
-		
-		setTitle("Add Book Copy");
+        
+        isInitialized = true;
 	}
 
 	@Override

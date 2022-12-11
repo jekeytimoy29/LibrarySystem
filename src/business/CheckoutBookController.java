@@ -29,15 +29,14 @@ public class CheckoutBookController {
 				if(member.getCheckoutRecord() == null) {
 					checkoutRecord = CheckoutRecordFactory.createCheckoutRecord(member);
 					checkoutRecord.addCheckoutEntry(CheckoutRecordFactory.createCheckoutEntry(bc, checkoutDate));
-					da.saveNewCheckoutRecord(checkoutRecord);
 				}
 				else {
 					CheckoutEntry checkoutEntry = CheckoutRecordFactory.createCheckoutEntry(bc, checkoutDate);
 					member.getCheckoutRecord().addCheckoutEntry(checkoutEntry);
 					checkoutRecord = member.getCheckoutRecord();
-					da.saveNewCheckoutRecord(checkoutRecord);
 				}
 				
+				da.saveNewMember(member);
 				updateBookCopyAvailability(bc, bookISBN);
 				return checkoutRecord;
 			}
@@ -49,11 +48,17 @@ public class CheckoutBookController {
 	public List<CheckoutRecord> getAllCheckoutRecords() {
 		DataAccess da = new DataAccessFacade();
 		
-		List<CheckoutRecord> records = new ArrayList<CheckoutRecord>();
+		List<CheckoutRecord> records = new ArrayList<>();
+		List<LibraryMember> members = new ArrayList<>();
 		
-		da.readCheckoutRecordMap().forEach((key, value) -> {
-			records.add(value);
+		da.readMemberMap().forEach((key, value) -> {
+			members.add(value);
 		});
+		
+		for(LibraryMember member : members){
+			if(null != member.getCheckoutRecord())
+				records.add(member.getCheckoutRecord());
+		}
 
 		return records;
 	}
@@ -74,20 +79,25 @@ public class CheckoutBookController {
 
 	public void deleteCheckoutEntry(String memberId, String bookTitle, String copyNumber) {
 		DataAccess da = new DataAccessFacade();
-		CheckoutRecord checkoutRecord = da.readCheckoutRecordMap().get(memberId);
+		//CheckoutRecord checkoutRecord = da.readCheckoutRecordMap().get(memberId);
+		LibraryMember member = da.readMemberMap().get(memberId);
+		CheckoutRecord checkoutRecord = member.getCheckoutRecord();
 		BookCopy bookCopy;
 		
-		for(CheckoutEntry entry: checkoutRecord.getEntries()) {
-			if(entry.getBookCopy().getBook().getTitle().equals(bookTitle)
-					&& entry.getBookCopy().getCopyNum() == Integer.parseInt(copyNumber)) {
-				bookCopy = entry.getBookCopy();
-				checkoutRecord.getEntries().remove(entry);
-				da.saveNewCheckoutRecord(checkoutRecord);
-				updateBookCopyAvailability(bookCopy, bookCopy.getBook().getIsbn());
-				break;
+		if(checkoutRecord != null) {
+			for(CheckoutEntry entry: checkoutRecord.getEntries()) {
+				if(entry.getBookCopy().getBook().getTitle().equals(bookTitle)
+						&& entry.getBookCopy().getCopyNum() == Integer.parseInt(copyNumber)) {
+					bookCopy = entry.getBookCopy();
+					checkoutRecord.getEntries().remove(entry);
+					//da.saveNewCheckoutRecord(checkoutRecord);
+					da.saveNewMember(member);
+					updateBookCopyAvailability(bookCopy, bookCopy.getBook().getIsbn());
+					break;
+				}
 			}
 		}
-		
+	
 	}
 
 }

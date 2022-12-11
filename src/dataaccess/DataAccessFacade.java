@@ -10,13 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import business.Book;
-import business.CheckoutRecord;
 import business.LibraryMember;
 
 public class DataAccessFacade implements DataAccess {
 
 	enum StorageType {
-		BOOKS, MEMBERS, USERS, CHECKOUTRECORDS;
+		BOOKS, MEMBERS, USERS;
 	}
 	// Windows user can use
 
@@ -51,14 +50,6 @@ public class DataAccessFacade implements DataAccess {
 		books.put(bookId, book);
 		saveToStorage(StorageType.BOOKS, books);
 	}
-
-	
-	public void saveNewCheckoutRecord(CheckoutRecord checkoutRecord) {
-		HashMap<String, CheckoutRecord> checkoutRecords = readCheckoutRecordMap();
-		String memberId = checkoutRecord.getMemberId();
-		checkoutRecords.put(memberId, checkoutRecord);
-		saveToStorage(StorageType.CHECKOUTRECORDS, checkoutRecords);	
-	}
   
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Book> readBooksMap() {
@@ -82,13 +73,6 @@ public class DataAccessFacade implements DataAccess {
 		return (HashMap<String, User>) readFromStorage(StorageType.USERS);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public HashMap<String, CheckoutRecord> readCheckoutRecordMap() {
-		//Returns a Map with name/value pairs being
-		//   memberId -> CheckoutRecord
-		return (HashMap<String, CheckoutRecord>)readFromStorage(StorageType.CHECKOUTRECORDS);
-	}
-	
 	
 	/////load methods - these place test data into the storage area
 	///// - used just once at startup 
@@ -109,13 +93,6 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, LibraryMember> members = new HashMap<String, LibraryMember>();
 		memberList.forEach(member -> members.put(member.getMemberId(), member));
 		saveToStorage(StorageType.MEMBERS, members);
-	}
-
-	 
-	static void loadCheckoutMap(List<CheckoutRecord> checkoutRecords) {
-		HashMap<String, CheckoutRecord> records = new HashMap<String, CheckoutRecord>();
-		checkoutRecords.forEach(checkoutRecord -> records.put(checkoutRecord.getMemberId(), checkoutRecord));
-		saveToStorage(StorageType.CHECKOUTRECORDS, records);
 	}
 	
 	static void saveToStorage(StorageType type, Object ob) {

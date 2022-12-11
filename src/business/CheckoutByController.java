@@ -8,7 +8,7 @@ import dataaccess.DataAccessFacade;
 public class CheckoutByController {
 	public CheckoutRecord getCheckout(String memberId) {
 		DataAccess da = new DataAccessFacade();
-		return da.readCheckoutRecordMap().get(memberId);
+		return da.readMemberMap().get(memberId).getCheckoutRecord();
 	}
 	
 	public HashMap<String, LibraryMember> getMembers() {
