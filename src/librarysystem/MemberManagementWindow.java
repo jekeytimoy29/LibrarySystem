@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -67,7 +68,7 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 		bframe = new JFrame();
 		bframe.getContentPane().setForeground(new Color(255, 255, 255));
 		bframe.setBounds(100, 100, 650, 600);
-		//bframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		// bframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		bframe.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
@@ -150,6 +151,15 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 						|| txtZip.getText().equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Please fill all the fields");
+				} else if (!Pattern.compile(
+						"^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")
+						.matcher(txtTel.getText().trim()).matches()) {
+					JOptionPane.showMessageDialog(null,
+							"Please fill telephone field with correct format");
+				} else if (!(txtZip.getText().trim().length() == 5
+						|| txtZip.getText().trim().length() == 6)) {
+					JOptionPane.showMessageDialog(null,
+							"Please fill zip field with correct format");
 				} else {
 					// add the entered inputs to the table
 					try {
