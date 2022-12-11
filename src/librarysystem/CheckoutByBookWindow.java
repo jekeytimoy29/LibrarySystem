@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -92,9 +93,31 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 	
 	@Override
 	public void init() {
-		
+		if(!isInitialized) initUi();
+		initData();
+	}
+	
+	public void initData() {
 		populateMemberNameByCheckout();
 		
+		List<Book> books = bc.getAllBooks();
+		List<String> booksKey = new ArrayList<>();
+		for(Book b:books) {
+			booksKey.add(b.getIsbn()+": "+b.getTitle());
+		}
+		Collections.sort(booksKey);
+		DefaultComboBoxModel<String> modelCb = (DefaultComboBoxModel<String>) bookList.getModel();
+        modelCb.removeAllElements();
+        for (String item : booksKey) {
+            modelCb.addElement(item);
+        }
+        bookList.setModel(modelCb);
+        
+        model.setRowCount(0);
+		populateRecord(bookList.getSelectedItem().toString().split(": ")[0]);
+	}
+	
+	public void initUi() {
 		// TODO Auto-generated method stub
 		setTitle("Checkout Record By Book");
 
@@ -115,32 +138,25 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 		btnback.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				LibrarySystem.hideAllWindows();
-				LibrarySystem.INSTANCE.init();
-    			LibrarySystem.INSTANCE.setVisible(true);
-    			Util.centerFrameOnDesktop(LibrarySystem.INSTANCE);
-    			dispose();
-			}
+				Util.centerFrameOnDesktop(LibrarySystem.INSTANCE);
+				LibrarySystem.INSTANCE.setVisible(true);
+    		}
 		});
 		btnback.setBounds(6, 5, 117, 29);
 		panel.add(btnback);
-		
-		List<Book> books = bc.getAllBooks();
-		List<String> booksKey = new ArrayList<>();
-		for(Book b:books) {
-			booksKey.add(b.getIsbn()+": "+b.getTitle());
-		}
-		Collections.sort(booksKey);
 		
 		JLabel lblBook = new JLabel("Books");
 		lblBook.setBounds(320, 6, 135, 29);
 		panel.add(lblBook);
      
-        bookList = new JComboBox<String>(new Vector<String>(booksKey));
+        bookList = new JComboBox<String>();
         bookList.setBounds(385, 6, 205, 29);
         bookList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.setRowCount(0);
-				populateRecord(bookList.getSelectedItem().toString().split(": ")[0]);
+				if(bookList.getSelectedItem()!=null) {
+					model.setRowCount(0);
+					populateRecord(bookList.getSelectedItem().toString().split(": ")[0]);
+				}
 			}
 		});
         panel.add(bookList);
@@ -153,22 +169,20 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
      	table.setModel(model);
      	scrollPane.setViewportView(table);
      	table.setEnabled(false);
-        
-     	populateRecord(bookList.getSelectedItem().toString().split(": ")[0]);
      	
-        setVisible(true);
-        
         isInitialized = true;
 	}
 	
 	public void populateRecord(String isbn) {
+		List<Integer> hglRow = new ArrayList<Integer>();
+		Integer counter = 0;
  		Book book = bc.getBook(isbn);
  		if(book!=null) {
 	 		Arrays.sort(book.getCopies(), new Comparator<BookCopy>() {
 				@Override
 				public int compare(BookCopy o1, BookCopy o2) {
 					// TODO Auto-generated method stub
-					return o2.getCopyNum() - o1.getCopyNum();
+					return o1.getCopyNum() - o2.getCopyNum();
 				}
 	 		});
 	 		for(BookCopy bc: book.getCopies()) {
@@ -177,29 +191,16 @@ public class CheckoutByBookWindow extends JFrame implements LibWindow {
 	 			String memberName = memberNameByCheckout.get(memberKey)!=null?memberNameByCheckout.get(memberKey).split("=")[0]:"";
 	 			String memberDueDate = memberNameByCheckout.get(memberKey)!=null?memberNameByCheckout.get(memberKey).split("=")[1]:"";
 	 			if (!memberDueDate.equals("") && LocalDate.parse(memberDueDate).isBefore(LocalDate.now())) {
-	 				memberDueDate += " (Overdue)";
+	 				hglRow.add(counter);
+	 				//memberDueDate += " (Overdue)";
 	 			}
-	 			model.insertRow(0, new Object[] { bc.getBook().getIsbn(), bc.getBook().getTitle(), bc.getCopyNum(), memberName, memberDueDate });
-	 			
+	 			model.insertRow(counter++, new Object[] { bc.getBook().getIsbn(), bc.getBook().getTitle(), bc.getCopyNum(), memberName, memberDueDate });
 	 		}
  		}
  		
-// 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
-// 		    private static final long serialVersionUID = 1L;
-//
-//			@Override
-// 		    public Component getTableCellRendererComponent(JTable table,
-// 		            Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-//
-// 		        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-//
-// 		        String dueDate = table.getModel().getValueAt(row, 4).toString();
-// 		        if (!dueDate.equals("") && LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
-// 		            setBackground(Color.PINK/*new Color(255, 240, 245)*/);
-// 		        }       
-// 		        return this;
-// 		    }   
-// 		});
+ 		for(Integer i: hglRow) {
+ 			table.addRowSelectionInterval(i, i);
+ 		}
 	}
 
 	@Override
