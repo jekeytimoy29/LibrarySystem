@@ -60,15 +60,19 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 
 	@Override
 	public void init() {
+		if(!isInitialized) initUi();
+		populateData();
+	}
+	
+	public void initUi() {
 		// TODO Auto-generated method stub
-//		bframe = new JFrame();
-//		bframe.getContentPane().setForeground(new Color(255, 255, 255));
+		setTitle("Book Management");
+		
 		setBounds(100, 100, 600, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-//		panel.setBackground(new Color(233, 150, 122));
 		panel.setBounds(0, 6, 594, 460);
 		panel.setLayout(null);
 		getContentPane().add(panel);
@@ -77,23 +81,56 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 		scrollPane.setBounds(6, 46, 582, 408);
 		panel.add(scrollPane);
 		
-		table = new JTable();
-//		table.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				int r = table.getSelectedRow();
-//				idtf.setText(model.getValueAt(r, 0).toString());
-//				nametf.setText(model.getValueAt(r, 1).toString());
-//				authtf.setText(model.getValueAt(r, 2).toString());
-//				
-//			}
-//		});
-//		table.setBackground(new Color(255, 240, 245));
-		
 		// setData
+		table = new JTable();
 		model = new DefaultTableModel();
 		String[] column = {"ISBN", "Title", "Authors", "Max Checkout", "Copies"};
 		model.setColumnIdentifiers(column);
+		table.setModel(model);
+		scrollPane.setViewportView(table);
+		table.setEnabled(false);
+		populateData();
+		
+		JButton btnadd = new JButton("Add New Book");
+		btnadd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LibrarySystem.hideAllWindows();
+				BookAddWindow.INSTANCE.init();
+				Util.centerFrameOnDesktop(BookAddWindow.INSTANCE);
+				BookAddWindow.INSTANCE.setVisible(true);
+			}
+		});
+		btnadd.setBounds(453, 6, 135, 29);
+		panel.add(btnadd);
+		
+		JButton btnback = new JButton("Back");
+		btnback.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LibrarySystem.hideAllWindows();
+				Util.centerFrameOnDesktop(LibrarySystem.INSTANCE);
+    			LibrarySystem.INSTANCE.setVisible(true);
+			}
+		});
+		btnback.setBounds(6, 5, 117, 29);
+		panel.add(btnback);
+		
+		JButton btnAddBookCopy = new JButton("Add Book Copy");
+		btnAddBookCopy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LibrarySystem.hideAllWindows();
+				BookAddCopyWindow.INSTANCE.init();
+				Util.centerFrameOnDesktop(BookAddCopyWindow.INSTANCE);
+				BookAddCopyWindow.INSTANCE.setVisible(true);
+			}
+		});
+		btnAddBookCopy.setBounds(320, 6, 135, 29);
+		panel.add(btnAddBookCopy);
+		
+		isInitialized = true;
+	}
+	
+	public void populateData() {
+		model.setRowCount(0);
 		List<Book> books = bc.getAllBooks();
 		Collections.sort(books, new Comparator<Book>() {
 		      @Override
@@ -109,52 +146,7 @@ public class BookManagementWindow extends JFrame implements LibWindow {
 			}
 			model.insertRow(0, new Object[] { b.getIsbn(), b.getTitle(), author, b.getMaxCheckoutLength(), b.getNumCopies() });
 		}
-		table.setModel(model);
-		scrollPane.setViewportView(table);
-		table.setEnabled(false);
-		
-		JButton btnadd = new JButton("Add New Book");
-		btnadd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				LibrarySystem.hideAllWindows();
-				BookAddWindow.INSTANCE.init();
-				BookAddWindow.INSTANCE.setVisible(true);
-				Util.centerFrameOnDesktop(BookAddWindow.INSTANCE);
-				dispose();
-			}
-		});
-		btnadd.setBounds(453, 6, 135, 29);
-		panel.add(btnadd);
-		
-		JButton btnback = new JButton("Back");
-		btnback.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				LibrarySystem.hideAllWindows();
-				LibrarySystem.INSTANCE.init();
-    			LibrarySystem.INSTANCE.setVisible(true);
-    			Util.centerFrameOnDesktop(LibrarySystem.INSTANCE);
-    			dispose();
-			}
-		});
-		btnback.setBounds(6, 5, 117, 29);
-		panel.add(btnback);
-		
-		JButton btnAddBookCopy = new JButton("Add Book Copy");
-		btnAddBookCopy.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				LibrarySystem.hideAllWindows();
-				BookAddCopyWindow.INSTANCE.init();
-				BookAddCopyWindow.INSTANCE.setVisible(true);
-				Util.centerFrameOnDesktop(BookAddCopyWindow.INSTANCE);
-				dispose();
-			}
-		});
-		btnAddBookCopy.setBounds(320, 6, 135, 29);
-		panel.add(btnAddBookCopy);
-		
-		setTitle("Book Management");
-		
-		isInitialized = true;
+		model.fireTableDataChanged();
 	}
 
 	@Override
