@@ -97,6 +97,11 @@ public class BookAddWindow extends JFrame implements LibWindow {
 			}
 		}
 		
+		if(bc.getBook(idtf.getText().trim())!=null) {
+			JOptionPane.showMessageDialog(null, "ISBN already exists");
+			return false;
+		}
+		
 		return true;
 	}
 
