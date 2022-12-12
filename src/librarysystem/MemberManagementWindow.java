@@ -230,19 +230,32 @@ public class MemberManagementWindow extends JFrame implements LibWindow {
 			public void actionPerformed(ActionEvent e) {
 				int r = table.getSelectedRow();
 				if (r >= 0) {
-					model.setValueAt(txtFname.getText(), r, 1);
-					model.setValueAt(txtLname.getText(), r, 2);
-					model.setValueAt(txtTel.getText(), r, 3);
-					try {
-						mc.getAndUpdateMember(model.getValueAt(r, 0).toString(),
-								txtFname.getText(), txtLname.getText(),
-								txtTel.getText());
-					} catch (LibrarySystemException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					if (!Pattern.compile(
+							"^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")
+							.matcher(txtTel.getText().trim()).matches()) {
+						JOptionPane.showMessageDialog(null,
+								"Please fill telephone field with correct format");
+					} else if (!(txtZip.getText().trim().length() == 5
+							|| txtZip.getText().trim().length() == 6)) {
+						JOptionPane.showMessageDialog(null,
+								"Please fill zip field with correct format");
+					} else {
+						model.setValueAt(txtFname.getText(), r, 1);
+						model.setValueAt(txtLname.getText(), r, 2);
+						model.setValueAt(txtTel.getText(), r, 3);
+						try {
+							mc.getAndUpdateMember(
+									model.getValueAt(r, 0).toString(),
+									txtFname.getText(), txtLname.getText(),
+									txtTel.getText());
+						} catch (LibrarySystemException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						model.fireTableDataChanged();
+						JOptionPane.showMessageDialog(null,
+								"Updated Successfully");
 					}
-					model.fireTableDataChanged();
-					JOptionPane.showMessageDialog(null, "Updated Successfully");
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select a row");
 				}
