@@ -41,7 +41,7 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
     private JTable table;
     private JScrollPane scrollPane;
     
-    private String[] column = {"Checkout Date", "Due Date", "ISBN", "Title"};
+    private String[] column = {"Checkout Date", "Due Date", "ISBN", "Title", "Member ID", "Member Name"};
 
 	/**
 	 * Launch the application.
@@ -151,11 +151,15 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
  		Integer dueDateLen = column[1].length();
  		Integer isbnLen = column[2].length();
  		Integer titleLen = column[3].length();
+ 		Integer idLen = column[4].length();
+ 		Integer nameLen = column[5].length();
  		
  		List<String> chckDateCol = new ArrayList<String>();
  		List<String> dueDateCol = new ArrayList<String>();
  		List<String> isbnCol = new ArrayList<String>();
  		List<String> titleCol = new ArrayList<String>();
+ 		List<String> idCol = new ArrayList<String>();
+ 		List<String> nameCol = new ArrayList<String>();
  		
  		if(cr!=null) {
 	 		Collections.sort(cr.getEntries(), new Comparator<CheckoutEntry>() {
@@ -166,7 +170,7 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
 				}
 	 		});
 	 		for(CheckoutEntry ce: cr.getEntries()) {
-	 			model.insertRow(0, new Object[] { ce.getCheckoutDate(), ce.getDueDate(), ce.getBookCopy().getBook().getIsbn(), ce.getBookCopy().getBook().getTitle() });
+	 			model.insertRow(0, new Object[] { ce.getCheckoutDate(), ce.getDueDate(), ce.getBookCopy().getBook().getIsbn(), ce.getBookCopy().getBook().getTitle(), memberList.getSelectedItem().toString().split(" - ")[0], memberList.getSelectedItem().toString().split(" - ")[1] });
 	 			
 	 			chckDateCol.add(ce.getCheckoutDate().toString());
 	 			if(chckDateLen < ce.getCheckoutDate().toString().length()) chckDateLen = ce.getCheckoutDate().toString().length();
@@ -176,6 +180,13 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
 	 			if(isbnLen < ce.getBookCopy().getBook().getIsbn().length()) isbnLen = ce.getBookCopy().getBook().getIsbn().length();
 	 			titleCol.add(ce.getBookCopy().getBook().getTitle());
 	 			if(titleLen < ce.getBookCopy().getBook().getTitle().length()) titleLen = ce.getBookCopy().getBook().getTitle().length();
+	 			
+	 			idCol.add(memberList.getSelectedItem().toString().split(" - ")[0]);
+	 			if(idLen < memberList.getSelectedItem().toString().split(" - ")[0].length()) idLen = memberList.getSelectedItem().toString().split(" - ")[0].length();
+	 			nameCol.add(memberList.getSelectedItem().toString().split(" - ")[1]);
+	 			if(nameLen < memberList.getSelectedItem().toString().split(" - ")[1].length()) nameLen = memberList.getSelectedItem().toString().split(" - ")[1].length();
+	 		
+	 		
 	 		}
  		}
  		
@@ -187,7 +198,11 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
  			System.out.print("-");
  		for(int i=0;i<titleLen;i++)
  			System.out.print("-");
- 		System.out.println("------------");
+ 		for(int i=0;i<idLen;i++)
+ 			System.out.print("-");
+ 		for(int i=0;i<nameLen;i++)
+ 			System.out.print("-");
+ 		System.out.println("----------------");
  		
  		System.out.print(column[0].toUpperCase());
  		for(int i=0;i<chckDateLen-column[0].length();i++)
@@ -207,6 +222,16 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
  		System.out.print(column[3].toUpperCase());
  		for(int i=0;i<titleLen-column[3].length();i++)
  			System.out.print(" ");
+ 		System.out.print(" | ");
+ 		
+ 		System.out.print(column[4].toUpperCase());
+ 		for(int i=0;i<idLen-column[4].length();i++)
+ 			System.out.print(" ");
+ 		System.out.print(" | ");
+ 		
+ 		System.out.print(column[5].toUpperCase());
+ 		for(int i=0;i<nameLen-column[5].length();i++)
+ 			System.out.print(" ");
  		System.out.println(" | ");
  		
  		for(int i=0;i<chckDateLen;i++)
@@ -217,7 +242,11 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
  			System.out.print("-");
  		for(int i=0;i<titleLen;i++)
  			System.out.print("-");
- 		System.out.println("------------");
+ 		for(int i=0;i<idLen;i++)
+ 			System.out.print("-");
+ 		for(int i=0;i<nameLen;i++)
+ 			System.out.print("-");
+ 		System.out.println("----------------");
  		
  		for(int i=0;i<chckDateCol.size();i++) {
  			System.out.print(chckDateCol.get(i));
@@ -238,6 +267,16 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
  	 		System.out.print(titleCol.get(i));
  	 		for(int j=0;j<titleLen-titleCol.get(i).length();j++)
  	 			System.out.print(" ");
+ 	 		System.out.print(" | ");
+ 	 		
+ 	 		System.out.print(idCol.get(i));
+ 	 		for(int j=0;j<idLen-idCol.get(i).length();j++)
+ 	 			System.out.print(" ");
+ 	 		System.out.print(" | ");
+ 	 		
+ 	 		System.out.print(nameCol.get(i));
+ 	 		for(int j=0;j<nameLen-nameCol.get(i).length();j++)
+ 	 			System.out.print(" ");
  	 		System.out.println(" | ");
  		}
  		
@@ -249,7 +288,11 @@ public class CheckoutByMemberWindow extends JFrame implements LibWindow {
  			System.out.print("-");
  		for(int i=0;i<titleLen;i++)
  			System.out.print("-");
- 		System.out.println("------------");
+ 		for(int i=0;i<idLen;i++)
+ 			System.out.print("-");
+ 		for(int i=0;i<nameLen;i++)
+ 			System.out.print("-");
+ 		System.out.println("----------------");
 	}
 
 	@Override
